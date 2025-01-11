@@ -10,19 +10,25 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/members")
 @Tag(name = "유저 인증/인가 API - /api/members ")
 public class AuthController {
     private final AuthService authService;
     @PostMapping("/join")
     @Operation(summary = "유저 회원가입 API - 유저가 회원가입을 요청합니다.",
             description = """
-                     개발 편의를 위한 테스트 계정 토큰 발급 api - **Swagger에서만 사용**
-                                        \s
-                     memberId 값에 따라 토큰 발급 (1 ~ 5)
+                     \s
+                     [RequestBody] \s
+                     * nickname: String (유저 닉네임) \s
+                     * birthDate: "yyyy-mm-dd" \s
+                     * password: String (유저 비밀번호) \s
+                     * passwordCheck: String (유저 비밀번호 확인) \s
+                     * isAgreed : Boolean (약관 동의 여부 | true여야만 가입이 가능) \s
                     \s""")
     public ApiResponse<CreateMemberResponse> joinMember(
             @RequestBody @Valid CreateMemberRequest request) {
