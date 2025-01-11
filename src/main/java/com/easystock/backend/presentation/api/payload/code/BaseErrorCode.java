@@ -1,4 +1,4 @@
-package com.easystock.backend.aspect.payload.code;
+package com.easystock.backend.presentation.api.payload.code;
 
 public interface BaseErrorCode {
     ErrorReasonDto getReason();

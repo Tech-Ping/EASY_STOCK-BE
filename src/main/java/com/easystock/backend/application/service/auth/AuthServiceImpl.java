@@ -3,7 +3,7 @@ package com.easystock.backend.application.service.auth;
 import com.easystock.backend.application.converter.MemberConverter;
 import com.easystock.backend.aspect.exception.AuthException;
 import com.easystock.backend.aspect.exception.JoinException;
-import com.easystock.backend.aspect.payload.code.status.ErrorStatus;
+import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import com.easystock.backend.infrastructure.database.entity.Member;
 import com.easystock.backend.infrastructure.database.repository.MemberRepository;
 import com.easystock.backend.presentation.api.dto.request.CreateMemberRequest;

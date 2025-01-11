@@ -1,6 +1,6 @@
 package com.easystock.backend.aspect.exception;
 
-import com.easystock.backend.aspect.payload.code.status.ErrorStatus;
+import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 
 public class UnauthorizedTokenException extends GeneralException{
 

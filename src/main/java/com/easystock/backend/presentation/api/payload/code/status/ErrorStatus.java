@@ -1,7 +1,7 @@
-package com.easystock.backend.aspect.payload.code.status;
+package com.easystock.backend.presentation.api.payload.code.status;
 
-import com.easystock.backend.aspect.payload.code.BaseErrorCode;
-import com.easystock.backend.aspect.payload.code.ErrorReasonDto;
+import com.easystock.backend.presentation.api.payload.code.BaseErrorCode;
+import com.easystock.backend.presentation.api.payload.code.ErrorReasonDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

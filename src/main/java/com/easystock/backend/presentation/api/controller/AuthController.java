@@ -1,7 +1,7 @@
 package com.easystock.backend.presentation.api.controller;
 
 import com.easystock.backend.application.service.auth.AuthService;
-import com.easystock.backend.aspect.payload.ApiResponse;
+import com.easystock.backend.presentation.api.payload.ApiResponse;
 import com.easystock.backend.presentation.api.dto.request.CreateMemberRequest;
 import com.easystock.backend.presentation.api.dto.request.LoginMemberRequest;
 import com.easystock.backend.presentation.api.dto.response.CreateMemberResponse;

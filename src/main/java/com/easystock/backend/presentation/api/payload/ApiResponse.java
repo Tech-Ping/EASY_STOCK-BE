@@ -1,5 +1,5 @@
-package com.easystock.backend.aspect.payload;
-import com.easystock.backend.aspect.payload.code.status.SuccessStatus;
+package com.easystock.backend.presentation.api.payload;
+import com.easystock.backend.presentation.api.payload.code.status.SuccessStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

@@ -1,4 +1,4 @@
-package com.easystock.backend.aspect.payload.code.status;
+package com.easystock.backend.presentation.api.payload.code.status;
 
 import lombok.Getter;
 @Getter

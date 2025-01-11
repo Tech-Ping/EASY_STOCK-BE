@@ -1,8 +1,7 @@
 package com.easystock.backend.presentation.token;
 
 import com.easystock.backend.aspect.exception.UnauthorizedTokenException;
-import com.easystock.backend.aspect.payload.ApiResponse;
-import com.easystock.backend.aspect.payload.code.status.ErrorStatus;
+import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

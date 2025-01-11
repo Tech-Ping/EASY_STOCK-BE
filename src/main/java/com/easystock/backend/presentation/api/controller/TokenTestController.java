@@ -1,9 +1,8 @@
 package com.easystock.backend.presentation.api.controller;
 
 import com.easystock.backend.application.service.TokenService;
-import com.easystock.backend.aspect.payload.ApiResponse;
+import com.easystock.backend.presentation.api.payload.ApiResponse;
 import com.easystock.backend.presentation.api.dto.response.TokenResponse;
-import com.easystock.backend.presentation.token.jwt.TokenGenerator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

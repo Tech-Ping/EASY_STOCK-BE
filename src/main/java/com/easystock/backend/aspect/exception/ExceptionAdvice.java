@@ -1,7 +1,7 @@
 package com.easystock.backend.aspect.exception;
-import com.easystock.backend.aspect.payload.ApiResponse;
-import com.easystock.backend.aspect.payload.code.ErrorReasonDto;
-import com.easystock.backend.aspect.payload.code.status.ErrorStatus;
+import com.easystock.backend.presentation.api.payload.ApiResponse;
+import com.easystock.backend.presentation.api.payload.code.ErrorReasonDto;
+import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

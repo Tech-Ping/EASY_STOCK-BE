@@ -2,7 +2,7 @@ package com.easystock.backend.presentation.token.jwt;
 
 import com.easystock.backend.aspect.exception.TokenInvalidTypeException;
 import com.easystock.backend.aspect.exception.UnauthorizedTokenException;
-import com.easystock.backend.aspect.payload.code.status.ErrorStatus;
+import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import com.easystock.backend.presentation.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
