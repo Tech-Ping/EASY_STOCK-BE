@@ -1,11 +1,20 @@
 package com.easystock.backend.presentation.api.dto.response;
 
-public class CreateMemberResponse {
-    private Long memberId;
-    private MemberInfo memberInfo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-    static class MemberInfo{
-        private String username;
-        private String password;
+@Getter
+@Setter
+@Builder
+public class CreateMemberResponse {
+    public Long memberId;
+    public MemberInfo memberInfo;
+
+    @Builder
+    public static class MemberInfo{
+        public String username;
+        public String nickname;
     }
 }

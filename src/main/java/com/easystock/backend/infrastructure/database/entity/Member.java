@@ -3,13 +3,13 @@ package com.easystock.backend.infrastructure.database.entity;
 import com.easystock.backend.infrastructure.database.entity.common.AuditingEntity;
 import com.easystock.backend.infrastructure.database.entity.enums.LevelType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
-@Getter @Setter
+@Getter @Setter @Builder
+@AllArgsConstructor @NoArgsConstructor
 @Table(name = "MEMBER")
 public class Member extends AuditingEntity {
     @Id
@@ -19,7 +19,7 @@ public class Member extends AuditingEntity {
     @Column(name= "username",nullable = false, length = 20)
     private String username;
 
-    @Column(name= "password", nullable = false, length = 20)
+    @Column(name= "password", nullable = false)
     private String password;
 
     @Column(name = "nickname", nullable = false)
