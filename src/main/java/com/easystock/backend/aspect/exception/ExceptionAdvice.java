@@ -63,7 +63,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = GeneralException.class)
     public ResponseEntity onThrowException(GeneralException generalException, HttpServletRequest request) {
-        ErrorReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
+        ErrorReasonDto errorReasonHttpStatus = generalException.getErrorStatus().getReasonHttpStatus();
         return handleExceptionInternal(generalException, errorReasonHttpStatus, request);
     }
 
