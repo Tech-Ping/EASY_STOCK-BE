@@ -1,7 +1,14 @@
 package com.easystock.backend.presentation.api.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor @Builder
 public class LoginMemberResponse {
-    private String accessToken;
-    private String refreshToken;
-    private Long memberId;
+    public TokenResponse tokenResponse;
+    public Long memberId;
 }

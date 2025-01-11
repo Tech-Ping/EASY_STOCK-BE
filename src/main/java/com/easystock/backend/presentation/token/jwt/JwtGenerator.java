@@ -1,14 +1,15 @@
 package com.easystock.backend.presentation.token.jwt;
 
-import com.easystock.backend.aspect.exception.MemberNotFoundException;
 import com.easystock.backend.aspect.exception.TokenInvalidTypeException;
 import com.easystock.backend.aspect.exception.UnauthorizedTokenException;
+import com.easystock.backend.aspect.payload.code.status.ErrorStatus;
 import com.easystock.backend.presentation.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.security.auth.message.AuthException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -60,7 +61,7 @@ public class JwtGenerator implements TokenGenerator {
             Object memberId = claims.get(MEMBER_ID_KEY_NAME);
             Object tokenType = claims.get(TOKEN_TYPE_KEY_NAME);
 
-            if (memberId == null) throw new MemberNotFoundException();
+            if (memberId == null) throw new AuthException(String.valueOf(ErrorStatus.MEMBER_NOT_FOUND));
             if (tokenType == null) throw new TokenInvalidTypeException();
 
             return new Token(
@@ -71,6 +72,8 @@ public class JwtGenerator implements TokenGenerator {
         }
         catch (JwtException e){
             throw new UnauthorizedTokenException();
+        } catch (AuthException e) {
+            throw new RuntimeException(e);
         }
     }
 
