@@ -20,6 +20,8 @@ public class MemberConverter {
                 .birthDate(input.birthDate)
                 .isAgreed(input.isAgreed)
                 .level(LevelType.ZERO)
+                .xpGuage(0)
+                .tokenBudget(0)
                 .build();
     }
 

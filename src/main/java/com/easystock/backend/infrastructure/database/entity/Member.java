@@ -28,6 +28,9 @@ public class Member extends AuditingEntity {
     @Column(name = "birth_date",nullable = false)
     private LocalDate birthDate;
 
+    @Column(name = "xp_guage", nullable = false)
+    private int xpGuage;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "level", nullable = false)
     private LevelType level;
@@ -35,4 +38,6 @@ public class Member extends AuditingEntity {
     @Column(name = "is_agreed", nullable = false)
     private Boolean isAgreed;
 
+    @Column(name = "token_budget", nullable = false)
+    private int tokenBudget;
 }
