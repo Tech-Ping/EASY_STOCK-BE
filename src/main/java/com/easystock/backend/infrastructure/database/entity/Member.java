@@ -40,4 +40,7 @@ public class Member extends AuditingEntity {
 
     @Column(name = "token_budget", nullable = false)
     private int tokenBudget;
+
+    @Column(name = "profile_image", columnDefinition = "1")
+    private int profileImage;
 }
