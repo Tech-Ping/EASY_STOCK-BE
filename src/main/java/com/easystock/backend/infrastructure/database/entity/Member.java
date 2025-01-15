@@ -3,13 +3,12 @@ package com.easystock.backend.infrastructure.database.entity;
 import com.easystock.backend.infrastructure.database.entity.common.AuditingEntity;
 import com.easystock.backend.infrastructure.database.entity.enums.LevelType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Getter @Setter
+@Getter @Setter @Builder
+@AllArgsConstructor @NoArgsConstructor
 @Table(name = "MEMBER")
 public class Member extends AuditingEntity {
     @Id
@@ -19,7 +18,7 @@ public class Member extends AuditingEntity {
     @Column(name= "username",nullable = false, length = 20)
     private String username;
 
-    @Column(name= "password", nullable = false, length = 20)
+    @Column(name= "password", nullable = false)
     private String password;
 
     @Column(name = "nickname", nullable = false)
@@ -28,6 +27,9 @@ public class Member extends AuditingEntity {
     @Column(name = "birth_date",nullable = false)
     private LocalDate birthDate;
 
+    @Column(name = "xp_guage", nullable = false)
+    private int xpGuage;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "level", nullable = false)
     private LevelType level;
@@ -35,4 +37,6 @@ public class Member extends AuditingEntity {
     @Column(name = "is_agreed", nullable = false)
     private Boolean isAgreed;
 
+    @Column(name = "token_budget", nullable = false)
+    private int tokenBudget;
 }
