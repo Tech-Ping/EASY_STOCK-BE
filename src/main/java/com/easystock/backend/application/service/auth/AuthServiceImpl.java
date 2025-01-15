@@ -14,7 +14,6 @@ import com.easystock.backend.presentation.token.jwt.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 @Service @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
     private final MemberRepository memberRepository;
@@ -40,7 +39,6 @@ public class AuthServiceImpl implements AuthService{
 
         if(!passwordEncoder.matches(request.password, member.getPassword()))
             throw new AuthException(ErrorStatus.LOGIN_PASSWORD_MISMATCH);
-
         String accessToken = tokenGenerator.generateAccessToken(member.getId());
         String refreshToken = tokenGenerator.generateRefreshToken(member.getId());
         return MemberConverter.toLoginResDto(accessToken, refreshToken, member.getId());

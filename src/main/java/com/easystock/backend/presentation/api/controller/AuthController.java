@@ -6,19 +6,16 @@ import com.easystock.backend.presentation.api.dto.request.CreateMemberRequest;
 import com.easystock.backend.presentation.api.dto.request.LoginMemberRequest;
 import com.easystock.backend.presentation.api.dto.response.CreateMemberResponse;
 import com.easystock.backend.presentation.api.dto.response.LoginMemberResponse;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
-@Tag(name = "유저 인증/인가 API - /api/members ")
+@RequestMapping("/api/auth")
+@Tag(name = "유저 인증/인가 API - /api/auth ")
 public class AuthController {
     private final AuthService authService;
     @PostMapping("/join")

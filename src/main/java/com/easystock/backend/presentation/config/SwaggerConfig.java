@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,13 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(servers = {@Server(url = "/", description = "Default Server URL")})
 @Configuration
 public class SwaggerConfig {
-    private static Components authComponent() {
-        return new Components().addSecuritySchemes("session-token",
-                new SecurityScheme()
-                        .type(SecurityScheme.Type.APIKEY)
-                        .in(SecurityScheme.In.HEADER)
-                        .name("Authorization"));
-    }
     @Bean
     public OpenAPI EasyStockAPI() {
         Info info = new Info()
@@ -28,8 +22,19 @@ public class SwaggerConfig {
                         - #### 자물쇠 버튼으로 `Authorization` 헤더 설정이 가능합니다.
                         """)
                 .version("v0.1");
+
+        SecurityScheme securityScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .name("Authorization");
+
+        SecurityRequirement securityRequirement = new SecurityRequirement()
+                .addList("bearerAuth");
+
         return new OpenAPI()
                 .info(info)
-                .components(authComponent());
+                .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
+                .addSecurityItem(securityRequirement);
     }
 }
