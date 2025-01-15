@@ -1,6 +1,7 @@
-package com.easystock.backend.application.service.auth;
+package com.easystock.backend.application.service.mypage;
 
 import com.easystock.backend.application.converter.MemberConverter;
+import com.easystock.backend.application.service.mypage.MyPageService;
 import com.easystock.backend.aspect.exception.AuthException;
 import com.easystock.backend.infrastructure.database.repository.MemberRepository;
 import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;

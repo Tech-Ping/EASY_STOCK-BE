@@ -1,6 +1,6 @@
 package com.easystock.backend.presentation.api.controller;
 
-import com.easystock.backend.application.service.auth.MyPageService;
+import com.easystock.backend.application.service.mypage.MyPageService;
 import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
 import com.easystock.backend.presentation.api.payload.ApiResponse;
 import com.easystock.backend.presentation.token.AuthUser;
