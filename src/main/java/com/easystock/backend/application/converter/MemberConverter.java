@@ -5,6 +5,7 @@ import com.easystock.backend.infrastructure.database.entity.enums.LevelType;
 import com.easystock.backend.presentation.api.dto.request.CreateMemberRequest;
 import com.easystock.backend.presentation.api.dto.request.LoginMemberRequest;
 import com.easystock.backend.presentation.api.dto.response.CreateMemberResponse;
+import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
 import com.easystock.backend.presentation.api.dto.response.LoginMemberResponse;
 import com.easystock.backend.presentation.api.dto.response.TokenResponse;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class MemberConverter {
                 .birthDate(input.birthDate)
                 .isAgreed(input.isAgreed)
                 .level(LevelType.ZERO)
+                .profileImage(1)
                 .xpGuage(0)
                 .tokenBudget(0)
                 .build();
@@ -50,6 +52,16 @@ public class MemberConverter {
         return LoginMemberResponse.builder()
                 .memberId(memberId)
                 .tokenResponse(tokenInfo)
+                .build();
+    }
+
+    public static GetMemberProfileResponse toProfileResDto(Member member){
+        return GetMemberProfileResponse.builder()
+                .profileImage(member.getProfileImage())
+                .nickname(member.getNickname())
+                .level(member.getLevel())
+                .tokenBudget(member.getTokenBudget())
+                .xpGuage(member.getXpGuage())
                 .build();
     }
 }

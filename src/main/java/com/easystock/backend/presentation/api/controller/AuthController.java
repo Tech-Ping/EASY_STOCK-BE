@@ -1,24 +1,25 @@
 package com.easystock.backend.presentation.api.controller;
 
 import com.easystock.backend.application.service.auth.AuthService;
+import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
 import com.easystock.backend.presentation.api.payload.ApiResponse;
 import com.easystock.backend.presentation.api.dto.request.CreateMemberRequest;
 import com.easystock.backend.presentation.api.dto.request.LoginMemberRequest;
 import com.easystock.backend.presentation.api.dto.response.CreateMemberResponse;
 import com.easystock.backend.presentation.api.dto.response.LoginMemberResponse;
+import com.easystock.backend.presentation.token.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
-@Tag(name = "유저 인증/인가 API - /api/members ")
+@RequestMapping("/api/auth")
+@Tag(name = "유저 인증/인가 API - /api/auth ")
 public class AuthController {
     private final AuthService authService;
     @PostMapping("/join")

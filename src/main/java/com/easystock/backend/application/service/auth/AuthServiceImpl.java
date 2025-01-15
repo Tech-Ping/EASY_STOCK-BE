@@ -3,6 +3,7 @@ package com.easystock.backend.application.service.auth;
 import com.easystock.backend.application.converter.MemberConverter;
 import com.easystock.backend.aspect.exception.AuthException;
 import com.easystock.backend.aspect.exception.JoinException;
+import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import com.easystock.backend.infrastructure.database.entity.Member;
 import com.easystock.backend.infrastructure.database.repository.MemberRepository;
@@ -10,10 +11,14 @@ import com.easystock.backend.presentation.api.dto.request.CreateMemberRequest;
 import com.easystock.backend.presentation.api.dto.request.LoginMemberRequest;
 import com.easystock.backend.presentation.api.dto.response.CreateMemberResponse;
 import com.easystock.backend.presentation.api.dto.response.LoginMemberResponse;
+import com.easystock.backend.presentation.token.UserAuthentication;
 import com.easystock.backend.presentation.token.jwt.TokenGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
@@ -40,7 +45,6 @@ public class AuthServiceImpl implements AuthService{
 
         if(!passwordEncoder.matches(request.password, member.getPassword()))
             throw new AuthException(ErrorStatus.LOGIN_PASSWORD_MISMATCH);
-
         String accessToken = tokenGenerator.generateAccessToken(member.getId());
         String refreshToken = tokenGenerator.generateRefreshToken(member.getId());
         return MemberConverter.toLoginResDto(accessToken, refreshToken, member.getId());
