@@ -2,7 +2,13 @@ package com.easystock.backend.presentation.api.dto.response;
 
 import com.easystock.backend.infrastructure.database.entity.enums.LevelType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+@Builder
+@Getter
+@Setter
 public class GetMemberProfileResponse {
     @Schema(description = "회원의 프로필 이미지")
     private int profileImage;
