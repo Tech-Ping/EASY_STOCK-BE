@@ -4,7 +4,6 @@ import com.easystock.backend.infrastructure.database.entity.common.AuditingEntit
 import com.easystock.backend.infrastructure.database.entity.enums.LevelType;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 
 @Entity
