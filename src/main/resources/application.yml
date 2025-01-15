@@ -21,3 +21,10 @@ spring:
         show_sql: true
         format_sql: true
 
+app:
+  token:
+    secretKey: ezezezdevdevdevezezezdevdevdevezezez
+    expiration:
+      access: 14400
+      refresh: 1382400
+

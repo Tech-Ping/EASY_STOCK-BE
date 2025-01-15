@@ -20,7 +20,7 @@ public class SwaggerConfig {
                         .name("Authorization"));
     }
     @Bean
-    public OpenAPI RingleAPI() {
+    public OpenAPI EasyStockAPI() {
         Info info = new Info()
                 .title(" EASY STOCK API")
                 .description("""
