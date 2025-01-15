@@ -28,7 +28,7 @@ public class Member extends AuditingEntity {
     private LocalDate birthDate;
 
     @Column(name = "xp_guage", nullable = false)
-    private int xpGuage;
+    private Integer xpGuage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "level", nullable = false)
@@ -38,5 +38,8 @@ public class Member extends AuditingEntity {
     private Boolean isAgreed;
 
     @Column(name = "token_budget", nullable = false)
-    private int tokenBudget;
+    private Integer tokenBudget;
+
+    @Column(name = "profile_image")
+    private Integer profileImage = 1;
 }

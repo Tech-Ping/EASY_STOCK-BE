@@ -27,7 +27,10 @@ public enum ErrorStatus implements BaseErrorCode {
     JOIN_PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "JOIN003", "비밀번호가 일치하지 않습니다. 다시 시도해주세요."),
 
     /* LOGIN exception */
-    LOGIN_PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "LOGIN001", "기존 회원의 비밀번호가 일치하지 않습니다. 다시 시도해주세요.");
+    LOGIN_PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "LOGIN001", "기존 회원의 비밀번호가 일치하지 않습니다. 다시 시도해주세요."),
+
+    /* AUTH exception */
+    AUTH_UNKNOWN_MEMBER_ID(HttpStatus.NOT_FOUND, "AU001", "사용자 인증 정보에서 회원 ID를 추출할 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

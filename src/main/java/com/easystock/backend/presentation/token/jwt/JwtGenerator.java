@@ -13,8 +13,10 @@ import jakarta.security.auth.message.AuthException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static com.easystock.backend.util.Constants.MEMBER_ID_KEY_NAME;
 import static com.easystock.backend.util.Constants.TOKEN_TYPE_KEY_NAME;
@@ -33,6 +35,7 @@ public class JwtGenerator implements TokenGenerator {
         return Jwts.builder()
                 .setHeader(createTokenHeader(TokenType.ACCESS_TOKEN))
                 .setClaims(Map.of(MEMBER_ID_KEY_NAME, memberId))
+                .setSubject(String.valueOf(memberId))
                 .setExpiration(new Date(System.currentTimeMillis()+ jwtProperties.getExpiration().getAccess()))
                 .signWith(secretKey)
                 .compact();
@@ -43,6 +46,7 @@ public class JwtGenerator implements TokenGenerator {
         return Jwts.builder()
                 .setHeader(createTokenHeader(TokenType.REFRESH_TOKEN))
                 .setClaims((Map.of(MEMBER_ID_KEY_NAME, memberId)))
+                .setSubject(String.valueOf(memberId))
                 .setExpiration(new Date(System.currentTimeMillis()+ jwtProperties.getExpiration().getRefresh()))
                 .signWith(secretKey)
                 .compact();
@@ -77,15 +81,33 @@ public class JwtGenerator implements TokenGenerator {
         }
     }
 
-    public void validateAccessToken(String accessToken){
+    public boolean validateAccessToken(String accessToken){
         try {
             JwtParser jwtParser = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build();
             jwtParser.parseClaimsJws(accessToken);
+            return true;
         } catch(JwtException e){
             throw new TokenInvalidTypeException();
         }
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            JwtParser jwtParser = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build();
+            jwtParser.parseClaimsJws(refreshToken);
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
+    }
+
+    public String generateAccessTokenFromRefreshToken(String refreshToken) {
+        Token token = extractTokenData(refreshToken);
+        return generateAccessToken(token.memberId());
     }
 
     private Map<String, Object> createTokenHeader(TokenType tokenType){
