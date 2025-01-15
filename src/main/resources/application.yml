@@ -25,6 +25,5 @@ app:
   token:
     secretKey: ezezezdevdevdevezezezdevdevdevezezez
     expiration:
-      access: 14400
-      refresh: 1382400
-
+      access: 14400000
+      refresh: 138240000
