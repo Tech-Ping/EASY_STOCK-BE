@@ -1,4 +1,4 @@
-package com.easystock.backend.application.converter;
+package com.easystock.backend.presentation.api.dto.converter;
 
 import com.easystock.backend.infrastructure.database.entity.Member;
 import com.easystock.backend.infrastructure.database.entity.enums.LevelType;

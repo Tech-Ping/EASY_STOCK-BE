@@ -1,6 +1,6 @@
 package com.easystock.backend.application.service.auth;
 
-import com.easystock.backend.application.converter.MemberConverter;
+import com.easystock.backend.presentation.api.dto.converter.MemberConverter;
 import com.easystock.backend.aspect.exception.AuthException;
 import com.easystock.backend.aspect.exception.JoinException;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
