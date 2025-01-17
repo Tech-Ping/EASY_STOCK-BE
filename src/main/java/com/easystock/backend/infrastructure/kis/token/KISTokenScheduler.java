@@ -80,7 +80,7 @@ public class KISTokenScheduler {
                 KisTokenResponse tokenResponse = response.getBody();
                 if (tokenResponse != null) {
                     String accessToken = tokenResponse.getAccessToken();
-                    tokenService.setAccessToken(accessToken); // 암호화하여 저장
+                    tokenService.setAccessToken(accessToken);
                     log.info("08:30 스케줄러 : AccessToken 갱신 성공");
                 } else {
                     log.info("response가 null입니다.");
