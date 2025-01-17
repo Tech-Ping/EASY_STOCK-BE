@@ -1,6 +1,6 @@
 package com.easystock.backend.infrastructure.kis.token;
 
-import com.easystock.backend.infrastructure.kis.response.KISTokenResponse;
+import com.easystock.backend.infrastructure.kis.response.KisTokenResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -73,11 +73,11 @@ public class KISTokenScheduler {
         HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
 
         try {
-            ResponseEntity<KISTokenResponse> response = restTemplate.exchange(
-                    KIS_TOKEN_URL, HttpMethod.POST, request, KISTokenResponse.class);
+            ResponseEntity<KisTokenResponse> response = restTemplate.exchange(
+                    KIS_TOKEN_URL, HttpMethod.POST, request, KisTokenResponse.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                KISTokenResponse tokenResponse = response.getBody();
+                KisTokenResponse tokenResponse = response.getBody();
                 if (tokenResponse != null) {
                     String accessToken = tokenResponse.getAccessToken();
                     tokenService.setAccessToken(accessToken); // 암호화하여 저장

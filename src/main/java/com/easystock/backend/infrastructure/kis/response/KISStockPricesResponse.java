@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class KISStockPricesResponse {
+public class KisStockPricesResponse {
 
     @JsonProperty("output")
-    private final KISStockPricesOutputResponse output;
+    private final KisStockPricesOutputResponse output;
 
     @JsonProperty("rt_cd")
     private final String rtCd;

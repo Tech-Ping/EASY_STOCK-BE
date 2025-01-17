@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class KISStockPricesOutputResponse {
+public class KisStockPricesOutputResponse {
 
     @JsonProperty("iscd_stat_cls_code")
     private final String iscdStatClsCode;
