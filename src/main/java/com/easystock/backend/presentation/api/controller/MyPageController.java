@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/my")
-@Tag(name = "유저 인증/인가 API - /api/my ")
+@Tag(name = "마이페이지 인증/인가 API - /api/my ")
 public class MyPageController {
     private final MyPageService myPageService;
     @GetMapping("/profile")
