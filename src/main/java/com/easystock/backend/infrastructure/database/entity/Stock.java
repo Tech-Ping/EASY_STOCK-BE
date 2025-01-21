@@ -17,6 +17,8 @@ public class Stock {
 
     private String name;
 
+    private String code;
+  
     @Enumerated(EnumType.STRING)
     private MarketType type;
 
