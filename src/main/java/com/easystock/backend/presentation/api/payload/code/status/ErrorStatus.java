@@ -33,7 +33,10 @@ public enum ErrorStatus implements BaseErrorCode {
     AUTH_UNKNOWN_MEMBER_ID(HttpStatus.NOT_FOUND, "AUTH001", "사용자 인증 정보에서 회원 ID를 추출할 수 없습니다."),
 
     /* TUTORIAL exception */
-    TUTORIAL_UNSUPPORTED(HttpStatus.BAD_REQUEST, "TUTORIAL001", "지원되지 않는 튜토리얼 레벨입니다.");
+    TUTORIAL_UNSUPPORTED(HttpStatus.BAD_REQUEST, "TUTORIAL001", "지원되지 않는 튜토리얼 레벨입니다."),
+
+    /* QUIZ exception */
+    QUIZ_NOT_FOUND(HttpStatus.BAD_REQUEST, "QUIZ001", "해당하는 퀴즈 정보가 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
