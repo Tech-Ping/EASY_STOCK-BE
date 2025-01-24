@@ -14,6 +14,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByUsername(String username);
 
     @Modifying
+    @Query("UPDATE Member m SET m.xpGauge = m.xpGauge + :xp WHERE m.id = :memberId")
+    void addXpGauge(@Param("memberId") Long memberId, @Param("xp") int xp);
+
+    @Modifying
     @Query("UPDATE Member m SET m.level = :nextLevel WHERE m.id = :memberId")
     void improveLevel(@Param("memberId") Long memberId, @Param("nextLevel")LevelType nextLevel);
 
