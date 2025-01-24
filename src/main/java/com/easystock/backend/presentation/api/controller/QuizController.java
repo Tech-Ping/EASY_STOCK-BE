@@ -40,8 +40,9 @@ public class QuizController {
     public ApiResponse<QuizSubmitResponse> submitQuizAnswer(
             @Parameter(hidden = true)
             @AuthUser Long memberId,
+            @RequestParam Long quizId,
             @RequestBody @Valid QuizSubmitRequest request) {
-        return ApiResponse.onSuccess(quizService.submitAnswer(memberId, request.getQuizId(), request.getInputIndex()));
+        return ApiResponse.onSuccess(quizService.submitAnswer(memberId, quizId, request.getInputIndex()));
     }
 
 }

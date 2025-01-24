@@ -31,17 +31,20 @@ public class QuizServiceImpl implements QuizService{
         LevelType levelType = member.getLevel();
         List<Quiz> quizzes = memberQuizRepository.findUncompletedQuizProblemsByLevel(memberId, levelType);
         if(quizzes.isEmpty()) throw new QuizException(ErrorStatus.QUIZ_NOT_FOUND);
+
         Quiz nextQuiz= quizzes.get(0);
-        MemberQuiz memberQuiz = new MemberQuiz(member, nextQuiz, false);
-        memberQuizRepository.save(memberQuiz);
+        boolean exists = memberQuizRepository.existsByMemberIdAndQuizId(memberId, nextQuiz.getId());
+        if (!exists) {
+            MemberQuiz memberQuiz = new MemberQuiz(member, nextQuiz, false);
+            memberQuizRepository.save(memberQuiz);
+        }
         return nextQuiz;
     }
 
     @Override
     @Transactional
     public QuizSubmitResponse submitAnswer(Long memberId, Long quizId, int inputIndex) {
-        MemberQuiz memberQuiz = memberQuizRepository.findByMemberIdAndQuizId(memberId, quizId)
-                .orElseThrow(() -> new QuizException(ErrorStatus.QUIZ_NOT_FOUND));
+       MemberQuiz memberQuiz = memberQuizRepository.findByMemberIdAndQuizId(memberId, quizId);
 
         if (memberQuiz.isCompleted()) {
             int totalXp = memberRepository.findById(memberId).orElseThrow().getXpGauge();
@@ -69,6 +72,7 @@ public class QuizServiceImpl implements QuizService{
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new QuizException(ErrorStatus.MEMBER_NOT_FOUND));
         int xpGauge = member.getXpGauge();
+
         boolean isTutorialCompleted = member.getIsTutorialCompleted();
         if(!isTutorialCompleted) return;
         LevelType nextLevel = calculateNextLevel(levelType, xpGauge);
