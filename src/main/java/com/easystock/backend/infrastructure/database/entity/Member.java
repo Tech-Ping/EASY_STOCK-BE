@@ -34,6 +34,12 @@ public class Member extends AuditingEntity {
     @Column(name = "level", nullable = false)
     private LevelType level;
 
+    @Column(name = "is_tutorial_completed", nullable = false)
+    private Boolean isTutorialCompleted;
+
+    @Column(name = "is_quiz_completed", nullable = false)
+    private Boolean isQuizCompleted;
+
     @Column(name = "is_agreed", nullable = false)
     private Boolean isAgreed;
 

@@ -1,4 +1,4 @@
-package com.easystock.backend.application.service;
+package com.easystock.backend.application.service.token;
 
 
 import com.easystock.backend.presentation.api.dto.response.TokenResponse;

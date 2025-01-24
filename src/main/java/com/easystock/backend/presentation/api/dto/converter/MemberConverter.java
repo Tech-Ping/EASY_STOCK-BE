@@ -22,6 +22,8 @@ public class MemberConverter {
                 .isAgreed(input.isAgreed)
                 .level(LevelType.ZERO)
                 .profileImage(1)
+                .isQuizCompleted(false)
+                .isTutorialCompleted(false)
                 .xpGuage(0)
                 .tokenBudget(0)
                 .build();
