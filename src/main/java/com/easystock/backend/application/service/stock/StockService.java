@@ -33,6 +33,18 @@ public class StockService {
     @Value("${APP_SECRET:}")
     private String APP_SECRET;
 
+    @Value("${KIS_STOCK_PRICE_URL:}")
+    private String KIS_STOCK_PRICE_URL;
+
+    @Value("${KIS_STOCK_PRICE_TR_ID:}")
+    private String KIS_STOCK_PRICE_TR_ID;
+
+    @Value("${KIS_TRADE_QUOTE_URL:}")
+    private String KIS_TRADE_QUOTE_URL;
+
+    @Value("${KIS_TRADE_QUOTE_TR_ID:}")
+    private String KIS_TRADE_QUOTE_TR_ID;
+
     private final KisStockConverter kisStockConverter;
     private final KISTokenService kisTokenService;
     private final StockRepository stockRepository;
@@ -69,7 +81,10 @@ public class StockService {
                     "Bearer " + kisTokenService.getAccessToken(),
                     APP_KEY,
                     APP_SECRET,
-                    stock.getCode()
+                    stock.getCode(),
+                    KIS_STOCK_PRICE_URL,
+                    KIS_STOCK_PRICE_TR_ID,
+                    KisStockPricesResponse.class
             );
 
             KisStockPricesResponse stockApiResponse = kisResponse.getBody();
