@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.List;
@@ -48,7 +45,7 @@ public class StockController {
         return ApiResponse.onSuccess(stockService.getStockPrice(stockId));
     }
 
-    @GetMapping("/{stockId}/{type}")
+    @GetMapping("/{stockId}/quotes")
     @Operation(
             summary = "주식 호가/잔량 조회 API - 특정 주식의 매도/매수에 따른 이름, 현재가, 호가 10개, 잔량 10개 정보를 반환합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
@@ -57,7 +54,8 @@ public class StockController {
             @Parameter(description = "주식 ID", required = true)
             @PathVariable Long stockId,
             @Parameter(description = "거래 타입 (SELL 또는 BUY)", required = true)
-            @PathVariable TradeType type) {
+            @RequestParam(required = false) TradeType type
+    ) {
         return ApiResponse.onSuccess(stockService.getStockQuotes(stockId, type));
     }
 }
