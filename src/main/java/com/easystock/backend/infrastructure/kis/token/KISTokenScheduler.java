@@ -23,13 +23,13 @@ public class KISTokenScheduler {
     private final RestTemplate restTemplate;
     private final KISTokenService tokenService;
 
-    @Value("${KIS_TOKEN_URL}")
+    @Value("${KIS_TOKEN_URL:}")
     private String KIS_TOKEN_URL;
 
-    @Value("${APP_KEY}")
+    @Value("${APP_KEY:}")
     private String APP_KEY;
 
-    @Value("${APP_SECRET}")
+    @Value("${APP_SECRET:}")
     private String APP_SECRET;
 
     /**

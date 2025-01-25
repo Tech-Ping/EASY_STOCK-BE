@@ -22,7 +22,9 @@ public class MemberConverter {
                 .isAgreed(input.isAgreed)
                 .level(LevelType.ZERO)
                 .profileImage(1)
-                .xpGuage(0)
+                .isQuizCompleted(false)
+                .isTutorialCompleted(false)
+                .xpGauge(0)
                 .tokenBudget(0)
                 .build();
     }
@@ -61,7 +63,7 @@ public class MemberConverter {
                 .nickname(member.getNickname())
                 .level(member.getLevel())
                 .tokenBudget(member.getTokenBudget())
-                .xpGuage(member.getXpGuage())
+                .xpGuage(member.getXpGauge())
                 .build();
     }
 }
