@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Trade extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
+    @Column(name = "trade_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
