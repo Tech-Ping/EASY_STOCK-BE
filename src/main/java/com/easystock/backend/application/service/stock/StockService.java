@@ -1,15 +1,15 @@
 package com.easystock.backend.application.service.stock;
 
-import com.easystock.backend.aspect.exception.QuizException;
 import com.easystock.backend.aspect.exception.StockException;
 import com.easystock.backend.infrastructure.database.entity.Stock;
+import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
 import com.easystock.backend.infrastructure.database.repository.StockRepository;
 import com.easystock.backend.infrastructure.kis.converter.KisStockConverter;
-import com.easystock.backend.infrastructure.kis.response.KisStockPricesOutputResponse;
-import com.easystock.backend.infrastructure.kis.response.KisStockPricesResponse;
+import com.easystock.backend.infrastructure.kis.response.*;
 import com.easystock.backend.infrastructure.kis.token.KISTokenService;
 import com.easystock.backend.presentation.api.dto.converter.StockConverter;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
+import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -122,5 +122,48 @@ public class StockService {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    /**
+     * 특정 주식의 실시간 호가와 잔량을 가져오는 메소드
+     */
+    private StockQuotesResponse getStockQuotesFromApi(Stock stock, TradeType type) {
+        try {
+            ResponseEntity<KisStockQuotesResponse> kisResponse = kisStockConverter.exchangeRestTemplate(
+                    "Bearer " + kisTokenService.getAccessToken(),
+                    APP_KEY,
+                    APP_SECRET,
+                    stock.getCode(),
+                    KIS_TRADE_QUOTE_URL,
+                    KIS_TRADE_QUOTE_TR_ID,
+                    KisStockQuotesResponse.class
+            );
+
+            KisStockQuotesResponse stockApiResponse = kisResponse.getBody();
+
+            if (stockApiResponse != null) {
+
+                KisStockQuotesOutput1Response stockOutput1 = stockApiResponse.getOutput1();
+                KisStockQuotesOutput2Response stockOutput2 = stockApiResponse.getOutput2();
+
+                if (stockOutput1 != null && stockOutput2 != null) {
+                    return StockConverter.toStockQuotesResponse(stock, type, stockOutput1, stockOutput2);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * 주식 ID, 매도/매수를 기반으로 특정 주식의 실시간 호가와 잔량을 가져오는 메소드
+     */
+    public StockQuotesResponse getStockQuotes(Long stockId, TradeType type) {
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
+
+        return getStockQuotesFromApi(stock, type);
     }
 }

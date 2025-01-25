@@ -1,8 +1,10 @@
 package com.easystock.backend.presentation.api.controller;
 
 import com.easystock.backend.application.service.stock.StockService;
+import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
 import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
+import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import com.easystock.backend.presentation.api.payload.ApiResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -44,5 +46,18 @@ public class StockController {
             @Parameter(description = "주식 ID", required = true)
             @PathVariable Long stockId) {
         return ApiResponse.onSuccess(stockService.getStockPrice(stockId));
+    }
+
+    @GetMapping("/{stockId}/{type}")
+    @Operation(
+            summary = "주식 호가/잔량 조회 API - 특정 주식의 매도/매수에 따른 이름, 현재가, 호가 10개, 잔량 10개 정보를 반환합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    public ApiResponse<StockQuotesResponse> getStockQuotes(
+            @Parameter(description = "주식 ID", required = true)
+            @PathVariable Long stockId,
+            @Parameter(description = "거래 타입 (SELL 또는 BUY)", required = true)
+            @PathVariable TradeType type) {
+        return ApiResponse.onSuccess(stockService.getStockQuotes(stockId, type));
     }
 }
