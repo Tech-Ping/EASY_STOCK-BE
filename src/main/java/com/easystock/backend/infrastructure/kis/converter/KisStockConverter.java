@@ -18,10 +18,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class KisStockConverter {
 
-    @Value("${KIS_STOCK_PRICE_URL}")
+    @Value("${KIS_STOCK_PRICE_URL:}")
     private String KIS_STOCK_PRICE_URL;
 
-    @Value("${KIS_STOCK_PRICE_TR_ID}")
+    @Value("${KIS_STOCK_PRICE_TR_ID:}")
     private String KIS_STOCK_PRICE_TR_ID;
 
     private final RestTemplate restTemplate;

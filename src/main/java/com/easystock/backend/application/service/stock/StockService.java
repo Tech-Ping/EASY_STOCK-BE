@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 @Service
 public class StockService {
 
-    @Value("${APP_KEY}")
+    @Value("${APP_KEY:}")
     private String APP_KEY;
 
-    @Value("${APP_SECRET}")
+    @Value("${APP_SECRET:}")
     private String APP_SECRET;
 
     private final KisStockConverter kisStockConverter;
