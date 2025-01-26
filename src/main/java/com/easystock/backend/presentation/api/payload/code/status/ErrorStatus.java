@@ -36,7 +36,10 @@ public enum ErrorStatus implements BaseErrorCode {
     TUTORIAL_UNSUPPORTED(HttpStatus.BAD_REQUEST, "TUTORIAL001", "지원되지 않는 튜토리얼 레벨입니다."),
 
     /* QUIZ exception */
-    QUIZ_NOT_FOUND(HttpStatus.BAD_REQUEST, "QUIZ001", "해당하는 퀴즈 정보가 없습니다.");
+    QUIZ_NOT_FOUND(HttpStatus.BAD_REQUEST, "QUIZ001", "해당하는 퀴즈 정보가 없습니다."),
+
+    /* STOCK exception */
+    STOCK_NOT_FOUND(HttpStatus.BAD_REQUEST, "STOCK001", "해당하는 주식 정보가 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
