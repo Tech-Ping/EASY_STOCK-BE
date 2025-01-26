@@ -24,4 +24,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query("UPDATE Member m SET m.isTutorialCompleted = true, m.tokenBudget = m.tokenBudget + :rewardTokens WHERE m.id = :memberId")
     void completeTutorialAndRewardTokens(@Param("memberId") Long memberId, @Param("rewardTokens") int rewardTokens);
+
+    @Modifying
+    @Query("UPDATE Member m SET m.isQuizCompleted = true")
+    void updateQuizStatus(boolean allQuizProblemsSolved);
 }
