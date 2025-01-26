@@ -24,7 +24,7 @@ public class TradeController {
 
     @GetMapping
     @Operation(
-            summary = "모든 거래 목록 조회 API - 로그인한 사용자의 모든 거래를 반환합니다.",
+            summary = "모든 거래 목록 조회 API - 회원의 모든 거래를 반환합니다.",
             security = @SecurityRequirement(name = "bearerAuth"))
     public ApiResponse<List<TradeResponse>> getAllTrades(
             @Parameter(hidden = true)

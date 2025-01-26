@@ -23,7 +23,8 @@ public class LevelController {
     @PostMapping("/up")
     @Operation(
             summary = "회원 레벨업 API - 회원이 레벨업을 요청합니다.",
-            description = "회원이 레벨업을 요청합니다. 해당 레벨의 튜토리얼과 필수 퀴즈를 다 풀고, 경험치 기준을 충족하면 레벨업이 진행됩니다.",
+            description = "회원이 레벨업을 요청합니다. \s" +
+                    "해당 레벨의 튜토리얼과 필수 퀴즈를 다 풀고, 경험치 기준을 충족하면 레벨업이 진행됩니다. 레벨업 성공 시, 보상으로 3000STOKEN을 받습니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     public ApiResponse<LevelUpResponse> levelUp(
