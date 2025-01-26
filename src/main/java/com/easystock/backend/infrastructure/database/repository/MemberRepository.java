@@ -18,7 +18,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     void addXpGauge(@Param("memberId") Long memberId, @Param("xp") int xp);
 
     @Modifying
-    @Query("UPDATE Member m SET m.level = :nextLevel WHERE m.id = :memberId")
+    @Query("UPDATE Member m SET m.level = :nextLevel, m.isQuizCompleted = false, m.isTutorialCompleted = false WHERE m.id = :memberId")
     void improveLevel(@Param("memberId") Long memberId, @Param("nextLevel")LevelType nextLevel);
 
     @Modifying
