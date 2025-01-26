@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,15 +32,14 @@ public class TradeController {
         return ApiResponse.onSuccess(tradeService.getAllTradesByUser(memberId));
     }
 
-    @GetMapping("/status/{status}")
+    @GetMapping
     @Operation(
             summary = "상태별 거래 목록 조회 API - 로그인한 사용자의 특정 상태에 따른 거래 목록을 반환합니다.",
             security = @SecurityRequirement(name = "bearerAuth"))
     public ApiResponse<List<TradeResponse>> getTradesByStatus(
             @Parameter(hidden = true)
             @AuthUser Long memberId,
-            @PathVariable("status") TradeStatus status) {
+            @RequestParam(required = false) TradeStatus status) {
         return ApiResponse.onSuccess(tradeService.getTradesByStatus(memberId, status));
     }
-
 }
