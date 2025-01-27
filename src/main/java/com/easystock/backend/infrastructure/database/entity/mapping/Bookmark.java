@@ -11,7 +11,8 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "bookmark")
+@Table(name = "bo" +
+        "okmark")
 public class Bookmark extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
