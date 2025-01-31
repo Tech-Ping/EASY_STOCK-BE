@@ -45,4 +45,9 @@ public class Trade extends AuditingEntity {
         this.customer = customer;
         this.stock = stock;
     }
+
+    public void cancelTrade(){
+        this.status = TradeStatus.CANCELED;
+    }
+
 }

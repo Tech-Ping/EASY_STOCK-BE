@@ -2,6 +2,7 @@ package com.easystock.backend.application.service.trade;
 
 import com.easystock.backend.aspect.exception.AuthException;
 import com.easystock.backend.aspect.exception.StockException;
+import com.easystock.backend.aspect.exception.TradeException;
 import com.easystock.backend.infrastructure.database.entity.Inventory;
 import com.easystock.backend.infrastructure.database.entity.Member;
 import com.easystock.backend.infrastructure.database.entity.Stock;
@@ -37,6 +38,7 @@ public class TradeServiceImpl implements TradeService {
     private final StockRepository stockRepository;
     private final InventoryRepository inventoryRepository;
 
+    @Override
     public List<TradeResponse> getAllTradesByUser(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
@@ -45,6 +47,7 @@ public class TradeServiceImpl implements TradeService {
                 .toList();
     }
 
+    @Override
     public List<TradeResponse> getTradesByStatus(Long memberId, TradeStatus status) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
@@ -53,6 +56,7 @@ public class TradeServiceImpl implements TradeService {
                 .toList();
     }
 
+    @Override
     @Transactional
     public TradeResultResponse createTrade(Long memberId, TradeRequest request){
         Member member = memberRepository.findById(memberId)
@@ -68,7 +72,26 @@ public class TradeServiceImpl implements TradeService {
             createInventory(trade, member, stock);
         }
 
-        return TradeConverter.toTradeResultResponse(trade, member, stock);
+        return TradeConverter.toTradeResultResponse(trade, member, stock, "주문이 정상적으로 접수되었습니다.");
+    }
+
+    @Override
+    @Transactional
+    public TradeResultResponse cancelTrade(Long memberId, Long tradeId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
+        Trade trade = tradeRepository.findById(tradeId)
+                .orElseThrow(() -> new TradeException(ErrorStatus.TRADE_NOT_FOUND));
+
+        if (trade.getCustomer() != member){
+            throw new TradeException(ErrorStatus.TRADE_NOT_OWNED_BY_USER);
+        }
+        if (trade.getStatus() == TradeStatus.PENDING){
+            trade.cancelTrade();
+        } else {
+            throw new TradeException(ErrorStatus.TRADE_CANNOT_BE_CANCELLED);
+        }
+        return TradeConverter.toTradeResultResponse(trade, member, trade.getStock(), "주문이 정상적으로 취소되었습니다.");
     }
 
     // to-do: 중복 생성 안 되도록 주의하기

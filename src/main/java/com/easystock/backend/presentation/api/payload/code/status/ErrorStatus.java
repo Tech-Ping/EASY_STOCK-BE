@@ -42,7 +42,14 @@ public enum ErrorStatus implements BaseErrorCode {
     STOCK_NOT_FOUND(HttpStatus.BAD_REQUEST, "STOCK001", "해당하는 주식 정보가 없습니다."),
 
     /* LEVEL exception */
-    LEVELUP_CONDITION_UNSATISFIED(HttpStatus.BAD_REQUEST, "LEVELUP001", "레벨업 조건 미충족으로 레벨업에 실패하였습니다.");
+    LEVELUP_CONDITION_UNSATISFIED(HttpStatus.BAD_REQUEST, "LEVELUP001", "레벨업 조건 미충족으로 레벨업에 실패하였습니다."),
+
+    /* TRADE exception */
+    TRADE_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRADE001", "해당하는 주문 정보가 없습니다."),
+    TRADE_CANNOT_BE_CANCELLED(HttpStatus.BAD_REQUEST, "TRADE002", "이미 처리된 주문을 취소할 수 없습니다."),
+    TRADE_NOT_OWNED_BY_USER(HttpStatus.BAD_REQUEST, "TRADE003", "해당 유저의 주문이 아닙니다.");
+
+
 
     private final HttpStatus httpStatus;
     private final String code;

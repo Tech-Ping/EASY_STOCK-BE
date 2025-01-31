@@ -38,7 +38,7 @@ public class TradeConverter {
                 .build();
     }
 
-    public static TradeResultResponse toTradeResultResponse(Trade trade, Member member, Stock stock){
+    public static TradeResultResponse toTradeResultResponse(Trade trade, Member member, Stock stock, String msg){
         return TradeResultResponse.builder()
                 .tradeId(trade.getId())
                 .status(trade.getStatus())
@@ -47,7 +47,7 @@ public class TradeConverter {
                 .price(trade.getPrice())
                 .customerId(member.getId())
                 .stockName(stock.getName())
-                .message("주문이 정상적으로 접수되었습니다.")
+                .message(msg)
                 .build();
     }
 }

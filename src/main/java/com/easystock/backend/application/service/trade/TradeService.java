@@ -11,4 +11,5 @@ public interface TradeService {
     List<TradeResponse> getAllTradesByUser(Long memberId);
     List<TradeResponse> getTradesByStatus(Long memberId, TradeStatus status);
     TradeResultResponse createTrade(Long memberId, TradeRequest request);
+    TradeResultResponse cancelTrade(Long memberId, Long tradeId);
 }

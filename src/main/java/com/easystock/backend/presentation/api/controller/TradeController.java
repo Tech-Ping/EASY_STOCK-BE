@@ -46,4 +46,15 @@ public class TradeController {
             @RequestBody TradeRequest request) {
         return ApiResponse.onSuccess(tradeService.createTrade(memberId, request));
     }
+
+    @PatchMapping("/{tradeId}/cancel")
+    @Operation(
+            summary = "거래 대기 취소 API - 미체결된 거래(대기 중인 거래)를 취소합니다.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    public ApiResponse<TradeResultResponse> cancelTrade(
+            @Parameter(hidden = true)
+            @AuthUser Long memberId,
+            @PathVariable Long tradeId) {
+        return ApiResponse.onSuccess(tradeService.cancelTrade(memberId, tradeId));
+    }
 }
