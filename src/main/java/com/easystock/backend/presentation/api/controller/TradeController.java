@@ -24,13 +24,22 @@ public class TradeController {
 
     @GetMapping
     @Operation(
-            summary = "모든 거래 목록 조회 API - 회원의 모든 거래를 반환합니다.",
+            summary = "모든 거래 목록 조회 API - 로그인한 사용자의 모든 거래를 반환합니다.",
             security = @SecurityRequirement(name = "bearerAuth"))
     public ApiResponse<List<TradeResponse>> getAllTrades(
             @Parameter(hidden = true)
+            @AuthUser Long memberId) {
+        return ApiResponse.onSuccess(tradeService.getAllTradesByUser(memberId));
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "상태별 거래 목록 조회 API - 로그인한 사용자의 특정 상태에 따른 거래 목록을 반환합니다.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    public ApiResponse<List<TradeResponse>> getTradesByStatus(
+            @Parameter(hidden = true)
             @AuthUser Long memberId,
             @RequestParam(required = false) TradeStatus status) {
-        if(status == null) return ApiResponse.onSuccess(tradeService.getAllTradesByUser(memberId));
         return ApiResponse.onSuccess(tradeService.getTradesByStatus(memberId, status));
     }
 }

@@ -9,4 +9,5 @@ import java.util.List;
 public interface QuizService {
     Quiz getQuizProblem(Long memberId);
     QuizSubmitResponse submitAnswer(Long memberId, Long quizId, int inputIndex);
+    void levelUpIfPossible(Long memberId, LevelType levelType);
 }

@@ -22,7 +22,7 @@ public class QuizController {
 
     @GetMapping("/problem-solve")
     @Operation(
-            summary = "퀴즈 조회 API - 회원이 레벨에 따른 퀴즈 정보를 조회합니다.",
+            summary = "퀴즈 조회 API - 유저가 레벨에 따른 퀴즈 정보를 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     public ApiResponse<Quiz> getQuizProblems(
@@ -33,8 +33,8 @@ public class QuizController {
 
     @PostMapping("/{quizId}/submit")
     @Operation(
-            summary = "퀴즈 제출 API - 회원이 퀴즈에 대한 문제를 제출합니다.",
-            description = "회원이 풀고자 하는 퀴즈의 ID와 입력한 정답 인덱스를 요청 바디로 제출합니다.",
+            summary = "퀴즈 제출 API - 유저가 퀴즈에 대한 문제를 제출합니다.",
+            description = "유저가 풀고자 하는 퀴즈의 ID와 입력한 정답 인덱스를 요청 바디로 제출합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     public ApiResponse<QuizSubmitResponse> submitQuizAnswer(

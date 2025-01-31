@@ -39,10 +39,7 @@ public enum ErrorStatus implements BaseErrorCode {
     QUIZ_NOT_FOUND(HttpStatus.BAD_REQUEST, "QUIZ001", "해당하는 퀴즈 정보가 없습니다."),
 
     /* STOCK exception */
-    STOCK_NOT_FOUND(HttpStatus.BAD_REQUEST, "STOCK001", "해당하는 주식 정보가 없습니다."),
-
-    /* LEVEL exception */
-    LEVELUP_CONDITION_UNSATISFIED(HttpStatus.BAD_REQUEST, "LEVELUP001", "레벨업 조건 미충족으로 레벨업에 실패하였습니다.");
+    STOCK_NOT_FOUND(HttpStatus.BAD_REQUEST, "STOCK001", "해당하는 주식 정보가 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
