@@ -17,6 +17,5 @@ public class TradeRequest {
     private Integer quantity;
     private Integer tradePrice;
     private Integer currentPrice;
-    private Long memberId;
     private Long stockId;
 }
