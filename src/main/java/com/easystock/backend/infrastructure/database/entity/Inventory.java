@@ -5,6 +5,7 @@ import com.easystock.backend.infrastructure.database.entity.enums.TradeStatus;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,4 +29,12 @@ public class Inventory extends AuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_id", nullable = false)
     private Stock stock;
+
+    @Builder
+    public Inventory(Integer quantity, Integer price, Member member, Stock stock) {
+        this.quantity = quantity;
+        this.price = price;
+        this.member = member;
+        this.stock = stock;
+    }
 }
