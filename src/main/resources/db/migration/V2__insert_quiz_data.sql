@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS quiz_options (
 );
 
 -- QUIZ 데이터 삽입
-INSERT INTO QUIZ (id, question, answer_index, level) VALUES
+INSERT IGNORE INTO QUIZ (id, question, answer_index, level) VALUES
                                                          (1, 'KOSPI와 KOSDAQ의 차이점은?', 0, 'ZERO'),
                                                          (2, '예수금과 미수금의 차이점은?', 1, 'ZERO'),
                                                          (3, '종가 가지고 등락률 계산하기 문제: 전일 종가가 1000원이고, 현재가가 1200원일 때 등락률은?', 2, 'ZERO'),
@@ -24,7 +24,7 @@ INSERT INTO QUIZ (id, question, answer_index, level) VALUES
                                                          (9, '시장가 주문과 지정가 주문의 차이점은 무엇인가요?', 0, 'ONE');
 
 -- QUIZ_OPTIONS 데이터 삽입
-INSERT INTO QUIZ_OPTIONS (quiz_id, options) VALUES
+INSERT IGNORE INTO QUIZ_OPTIONS (quiz_id, options) VALUES
                                                 (1, 'KOSPI는 대형주, KOSDAQ은 중소형주 중심입니다.'),
                                                 (1, 'KOSPI는 외환 거래소입니다.'),
                                                 (1, 'KOSDAQ은 선물 시장입니다.'),
