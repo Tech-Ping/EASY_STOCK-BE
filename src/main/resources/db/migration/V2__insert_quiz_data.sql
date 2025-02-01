@@ -1,15 +1,15 @@
 CREATE TABLE IF NOT EXISTS quiz (
-                                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                    question VARCHAR(255) NOT NULL,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    question VARCHAR(255) NOT NULL,
     answer_index INT NOT NULL,
     level VARCHAR(20) NOT NULL
-    );
+);
 
 CREATE TABLE IF NOT EXISTS quiz_options (
-                                            quiz_id BIGINT NOT NULL,
-                                            options VARCHAR(255) NOT NULL,
+    quiz_id BIGINT NOT NULL,
+    options VARCHAR(255) NOT NULL,
     FOREIGN KEY (quiz_id) REFERENCES quiz(id)
-    );
+);
 
 -- QUIZ 데이터 삽입
 INSERT INTO QUIZ (id, question, answer_index, level) VALUES
