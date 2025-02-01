@@ -30,7 +30,9 @@ public class QuizServiceImpl implements QuizService{
                 .orElseThrow(()-> new QuizException(ErrorStatus.MEMBER_NOT_FOUND));
         LevelType levelType = member.getLevel();
         List<Quiz> quizzes = memberQuizRepository.findUncompletedQuizProblemsByLevel(memberId, levelType);
-        if(quizzes.isEmpty()) throw new QuizException(ErrorStatus.QUIZ_NOT_FOUND);
+
+        if(quizzes.isEmpty())
+            throw new QuizException(ErrorStatus.QUIZ_NOT_FOUND);
 
         Quiz nextQuiz= quizzes.get(0);
         boolean exists = memberQuizRepository.existsByMemberIdAndQuizId(memberId, nextQuiz.getId());
@@ -44,11 +46,11 @@ public class QuizServiceImpl implements QuizService{
     @Override
     @Transactional
     public QuizSubmitResponse submitAnswer(Long memberId, Long quizId, int inputIndex) {
-       MemberQuiz memberQuiz = memberQuizRepository.findByMemberIdAndQuizId(memberId, quizId);
+        MemberQuiz memberQuiz = memberQuizRepository.findByMemberIdAndQuizId(memberId, quizId);
 
         if (memberQuiz.isCompleted()) {
             int totalXp = memberRepository.findById(memberId).orElseThrow().getXpGauge();
-            return QuizConverter.toQuizSubmitResDto(false, 0, totalXp);
+            return QuizConverter.toQuizSubmitResDto(false, false, 0, totalXp);
         }
 
         Quiz quiz = quizRepository.findById(quizId)
@@ -62,35 +64,24 @@ public class QuizServiceImpl implements QuizService{
             memberQuizRepository.updateQuizAsCompleted(memberId, quizId);
         }
 
-        int totalXp = memberRepository.findById(memberId).orElseThrow().getXpGauge();
-        return QuizConverter.toQuizSubmitResDto(isCorrect, addedXp, totalXp);
-    }
+        int totalXp = memberRepository.findById(memberId)
+                .orElseThrow(() -> new QuizException(ErrorStatus.MEMBER_NOT_FOUND))
+                .getXpGauge();
 
-    @Override
-    @Transactional
-    public void levelUpIfPossible(Long memberId, LevelType levelType) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new QuizException(ErrorStatus.MEMBER_NOT_FOUND));
-        int xpGauge = member.getXpGauge();
-
-        boolean isTutorialCompleted = member.getIsTutorialCompleted();
-        if(!isTutorialCompleted) return;
-        LevelType nextLevel = calculateNextLevel(levelType, xpGauge);
-        if(nextLevel != null){
-            memberRepository.improveLevel(memberId, nextLevel);
+        boolean allQuizProblemsSolved = false;
+        try {
+            getQuizProblem(memberId);
+        } catch (QuizException e){
+            if(e.getErrorStatus() == ErrorStatus.QUIZ_NOT_FOUND) {
+                allQuizProblemsSolved = true;
+            } else {
+                throw e;
+            }
         }
-    }
-
-    private LevelType calculateNextLevel(LevelType currentLevel, int xpGauge) {
-        return switch (currentLevel) {
-            case ZERO -> xpGauge >= 50 ? LevelType.ONE : null;
-            case ONE -> xpGauge >= 200 ? LevelType.TWO : null;
-            case TWO -> xpGauge >= 600 ? LevelType.THREE : null;
-            case THREE -> xpGauge >= 1000 ? LevelType.FOUR : null;
-            case FOUR -> xpGauge >= 2000 ? LevelType.FIVE : null;
-            case FIVE -> xpGauge >= 3500 ? LevelType.SIX : null;
-            default -> null;
-        };
+        if(allQuizProblemsSolved){
+            memberRepository.updateQuizStatus(allQuizProblemsSolved);
+        }
+        return QuizConverter.toQuizSubmitResDto(isCorrect, allQuizProblemsSolved, addedXp, totalXp);
     }
 
 }
