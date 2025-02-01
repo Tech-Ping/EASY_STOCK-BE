@@ -15,7 +15,7 @@ import java.util.Base64;
 @Slf4j
 @Configuration
 public class FirebaseConfig {
-    @Value("${cloud.firebase}")
+    @Value("${cloud.firebase.key:}")
     private String firebaseSecret;
 
     @Bean
