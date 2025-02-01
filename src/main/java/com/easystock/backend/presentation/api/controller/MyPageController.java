@@ -24,7 +24,7 @@ public class MyPageController {
 
     @GetMapping("/profile")
     @Operation(
-            summary = "유저 프로필 조회 API - 유저가 본인의 프로필을 조회합니다.",
+            summary = "회원 프로필 조회 API - 회원이 본인의 프로필을 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     public ApiResponse<GetMemberProfileResponse> getMyProfile(
