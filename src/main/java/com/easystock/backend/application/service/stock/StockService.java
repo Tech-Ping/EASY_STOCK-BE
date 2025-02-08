@@ -1,5 +1,6 @@
 package com.easystock.backend.application.service.stock;
 
+import com.easystock.backend.aspect.exception.QuizException;
 import com.easystock.backend.aspect.exception.StockException;
 import com.easystock.backend.infrastructure.database.entity.Stock;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;

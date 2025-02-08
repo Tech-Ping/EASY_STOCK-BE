@@ -18,10 +18,18 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     void addXpGauge(@Param("memberId") Long memberId, @Param("xp") int xp);
 
     @Modifying
-    @Query("UPDATE Member m SET m.level = :nextLevel WHERE m.id = :memberId")
+    @Query("UPDATE Member m SET m.level = :nextLevel, m.isQuizCompleted = false, m.isTutorialCompleted = false WHERE m.id = :memberId")
     void improveLevel(@Param("memberId") Long memberId, @Param("nextLevel")LevelType nextLevel);
 
     @Modifying
     @Query("UPDATE Member m SET m.isTutorialCompleted = true, m.tokenBudget = m.tokenBudget + :rewardTokens WHERE m.id = :memberId")
     void completeTutorialAndRewardTokens(@Param("memberId") Long memberId, @Param("rewardTokens") int rewardTokens);
+
+    @Modifying
+    @Query("UPDATE Member m SET m.isQuizCompleted = true")
+    void updateQuizStatus(boolean allQuizProblemsSolved);
+
+    @Modifying
+    @Query("UPDATE Member m SET m.tokenBudget = m.tokenBudget + :rewardTokens WHERE m.id = :memberId")
+    void addRewardTokens(@Param("memberId") Long memberId, @Param("rewardTokens") int rewardTokens);
 }

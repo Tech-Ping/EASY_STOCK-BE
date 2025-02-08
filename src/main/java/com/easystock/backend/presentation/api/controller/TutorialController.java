@@ -25,7 +25,7 @@ public class TutorialController {
 
     @PostMapping("/complete")
     @Operation(
-            summary = "튜토리얼 완료하는 API - 특정 레벨의 튜토리얼 완료 후, 보상으로 1000 STOKEN을 받습니다.",
+            summary = "튜토리얼 완료 API - 특정 레벨의 튜토리얼 완료 후, 회원이 보상으로 1000 STOKEN을 받습니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     public ApiResponse<CompleteTutorialResponse> completeTutorial(
