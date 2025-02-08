@@ -20,6 +20,7 @@ import com.easystock.backend.presentation.api.dto.response.TradeResultResponse;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,7 +94,6 @@ public class TradeServiceImpl implements TradeService {
         return TradeConverter.toTradeResultResponse(trade, member, trade.getStock(), "주문이 정상적으로 취소되었습니다.");
     }
 
-    // to-do: 중복 생성 안 되도록 주의하기
     public void createInventory(Trade trade, Member member, Stock stock){
         Inventory inventory = InventoryConverter.toInventory(trade, member, stock);
         inventoryRepository.save(inventory);
@@ -109,6 +109,8 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
+    @Async
+    @Transactional
     public void checkTradeStatus(Stock stock, Long currentPrice){
         List<Trade> trades = tradeRepository.findTradesByStatusAndStock(TradeStatus.PENDING, stock);
 
