@@ -37,4 +37,5 @@ public class Inventory extends AuditingEntity {
         this.member = member;
         this.stock = stock;
     }
+
 }
