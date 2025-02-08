@@ -13,7 +13,6 @@ import com.easystock.backend.infrastructure.database.repository.MemberRepository
 import com.easystock.backend.infrastructure.database.repository.StockRepository;
 import com.easystock.backend.infrastructure.database.repository.TradeRepository;
 import com.easystock.backend.presentation.api.dto.converter.InventoryConverter;
-import com.easystock.backend.presentation.api.dto.converter.QuizConverter;
 import com.easystock.backend.presentation.api.dto.converter.TradeConverter;
 import com.easystock.backend.presentation.api.dto.request.TradeRequest;
 import com.easystock.backend.presentation.api.dto.response.TradeResponse;
@@ -64,7 +63,7 @@ public class TradeServiceImpl implements TradeService {
         Stock stock = stockRepository.findById(request.getStockId())
                 .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
 
-        TradeStatus tradeStatus = changeTradeStatusTo(request.getTradePrice(), request.getCurrentPrice());
+        TradeStatus tradeStatus = changeInitialTradeStatusTo(request.getTradePrice(), request.getCurrentPrice());
         Trade trade = TradeConverter.toTrade(request, member, stock, tradeStatus);
         tradeRepository.save(trade);
 
@@ -100,12 +99,24 @@ public class TradeServiceImpl implements TradeService {
         inventoryRepository.save(inventory);
     }
 
-    public TradeStatus changeTradeStatusTo(Integer tradePrice, Integer currentPrice){
+    public TradeStatus changeInitialTradeStatusTo(Integer tradePrice, Integer currentPrice){
         if (Objects.equals(tradePrice, currentPrice)){
             return TradeStatus.COMPLETED;
         }
         else {
             return TradeStatus.PENDING;
+        }
+    }
+
+    @Override
+    public void checkTradeStatus(Stock stock, Long currentPrice){
+        List<Trade> trades = tradeRepository.findTradesByStatusAndStock(TradeStatus.PENDING, stock);
+
+        for (Trade trade : trades) {
+            if (trade.getPrice() == currentPrice.intValue()) {
+                trade.completeTrade();
+                createInventory(trade, trade.getCustomer(), stock);
+            }
         }
     }
 }

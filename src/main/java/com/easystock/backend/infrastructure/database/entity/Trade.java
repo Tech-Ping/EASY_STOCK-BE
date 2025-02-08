@@ -50,4 +50,8 @@ public class Trade extends AuditingEntity {
         this.status = TradeStatus.CANCELED;
     }
 
+    public void completeTrade(){
+        this.status = TradeStatus.COMPLETED;
+    }
+
 }
