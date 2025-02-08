@@ -18,7 +18,7 @@ public class Inventory extends AuditingEntity {
 
     private Integer quantity;
 
-    private Integer totalPrice;
+    private Integer totalPrice; // 유저가 해당 주식 구매 시 사용한 총 포인트를 의미
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -34,6 +34,13 @@ public class Inventory extends AuditingEntity {
         this.totalPrice = totalPrice;
         this.member = member;
         this.stock = stock;
+    }
+
+    public void updateQuantity(Integer quantity){
+        this.quantity += quantity;
+    }
+    public void updateTotalPrice(Integer totalPrice){
+        this.totalPrice += totalPrice;
     }
 
 }

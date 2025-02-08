@@ -2,6 +2,7 @@ package com.easystock.backend.infrastructure.database.entity;
 
 import com.easystock.backend.infrastructure.database.entity.common.AuditingEntity;
 import com.easystock.backend.infrastructure.database.entity.enums.LevelType;
+import com.easystock.backend.infrastructure.database.entity.enums.TradeStatus;
 import com.easystock.backend.infrastructure.database.entity.mapping.MemberQuiz;
 import jakarta.persistence.*;
 import lombok.*;
@@ -54,4 +55,8 @@ public class Member extends AuditingEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberQuiz> memberQuizzes = new ArrayList<>();
+
+    public void updateTokenBudget(Integer token){
+        this.tokenBudget += token;
+    }
 }
