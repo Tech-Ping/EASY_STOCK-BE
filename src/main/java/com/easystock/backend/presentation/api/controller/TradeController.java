@@ -38,7 +38,7 @@ public class TradeController {
 
     @PostMapping
     @Operation(
-            summary = "주식 거래 API - 매수 또는 매도 거래를 제출합니다. (예상되는 거래 상태: 대기 or 완료)",
+            summary = "주식 거래 API - 매수 또는 매도 거래를 생성합니다. (예상되는 거래 상태: 대기 or 완료)",
             security = @SecurityRequirement(name = "bearerAuth"))
     public ApiResponse<TradeResultResponse> stockTrade(
             @Parameter(hidden = true)
