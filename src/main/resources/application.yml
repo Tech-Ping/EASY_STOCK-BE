@@ -31,3 +31,10 @@ app:
     expiration:
       access: 14400000
       refresh: 138240000
+
+cloud:
+  firebase:
+    key: ${FIREBASE_KEY}
+
+discord:
+  notification-url: ${FCM_WEBHOOK}
