@@ -109,55 +109,73 @@ public class TradeServiceImpl implements TradeService {
     @Transactional
     public void checkTradeStatus(Stock stock, Long currentPrice) {
         List<Trade> trades = tradeRepository.findTradesByStatusAndStock(TradeStatus.PENDING, stock);
-        
+
         for (Trade trade : trades) {
-            if (trade.getPrice() == currentPrice.intValue()) {
-                Member member = memberRepository.findById(trade.getCustomer().getId())
-                        .orElseThrow(() -> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
-                trade.completeTrade();
-                processTrade(trade, member, stock);
+            try {
+                if (trade.getPrice() == currentPrice.intValue()){
+                    validateTrade(trade, trade.getCustomer(), stock); // 거래 가능 여부 사전 검증
+                    executeTrade(trade, stock);
+                }
+            } catch (TradeException e) {
+                log.info("거래 처리 실패: tradeId={}, 이유={}", trade.getId(), e.getMessage());
             }
         }
     }
 
-    /**
-     * 거래 처리 로직을 한 곳에서 관리
-     * 잔액 부족 or 주식 부족 시 예외 발생 처리
-     */
+    private void validateTrade(Trade trade, Member member, Stock stock) {
+        int totalPrice = trade.getPrice() * trade.getQuantity();
+
+        if (trade.getType() == TradeType.BUY && member.getTokenBudget() < totalPrice) {
+            throw new TradeException(ErrorStatus.INSUFFICIENT_FUNDS);
+        }
+
+        if (trade.getType() == TradeType.SELL &&
+                inventoryRepository.findStockQuantityByMemberAndStock(member, stock) < trade.getQuantity()) {
+            throw new TradeException(ErrorStatus.INSUFFICIENT_STOCKS);
+        }
+    }
+
+    private void executeTrade(Trade trade, Stock stock) {
+        trade.completeTrade();
+        tradeRepository.save(trade);
+        processTrade(trade, trade.getCustomer(), stock);
+    }
+
     private void processTrade(Trade trade, Member member, Stock stock) {
         if (trade.getType() == TradeType.BUY) {
             processBuyTrade(trade, member, stock);
-        } else if (trade.getType() == TradeType.SELL){
+        } else {
             processSellTrade(trade, member, stock);
         }
     }
 
     private void processSellTrade(Trade trade, Member member, Stock stock) {
         int totalPrice = trade.getPrice() * trade.getQuantity();
-        int ownedQuantity = inventoryRepository.findStockQuantityByMemberAndStock(member, stock);
 
-        if (ownedQuantity >= trade.getQuantity()) {
-            member.updateTokenBudget(totalPrice);
+        // 기존 재고 업데이트
+        Inventory inventory = inventoryRepository.findByMemberAndStock(member, stock)
+                .orElseThrow(() -> new TradeException(ErrorStatus.INSUFFICIENT_STOCKS));
+        inventory.updateQuantity(-trade.getQuantity());
+        inventory.updateTotalPrice(-totalPrice);
 
-            Inventory inventory = inventoryRepository.findByMemberAndStock(member, stock)
-                    .orElseThrow(() -> new TradeException(ErrorStatus.INSUFFICIENT_STOCKS));
-
-            inventory.updateQuantity(-trade.getQuantity());
-        }
+        // 예산 증가
+        member.updateTokenBudget(totalPrice);
     }
 
     private void processBuyTrade(Trade trade, Member member, Stock stock) {
         int totalPrice = trade.getPrice() * trade.getQuantity();
 
-        if (member.getTokenBudget() >= totalPrice) {
-            member.updateTokenBudget(-totalPrice);
+        // 예산 감소
+        member.updateTokenBudget(-totalPrice);
 
-            Optional<Inventory> optionalInventory = inventoryRepository.findByMemberAndStock(member, stock);
-
-            optionalInventory.ifPresentOrElse(
-                    inventory -> inventory.updateQuantity(trade.getQuantity()),
-                    () -> inventoryRepository.save(InventoryConverter.toInventory(trade.getQuantity(), totalPrice, member, stock))
-            );
-        }
+        // 기존 재고가 있으면 업데이트, 없으면 새로 생성
+        inventoryRepository.findByMemberAndStock(member, stock)
+                .ifPresentOrElse(
+                        inventory -> {
+                            inventory.updateQuantity(trade.getQuantity());
+                            inventory.updateTotalPrice(totalPrice);
+                        },
+                        () -> inventoryRepository.save(InventoryConverter.toInventory(trade.getQuantity(), totalPrice, member, stock))
+                );
     }
 }
