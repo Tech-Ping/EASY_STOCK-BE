@@ -1,5 +1,6 @@
 package com.easystock.backend.application.service.stock;
 
+import com.easystock.backend.application.service.trade.TradeService;
 import com.easystock.backend.aspect.exception.QuizException;
 import com.easystock.backend.aspect.exception.StockException;
 import com.easystock.backend.infrastructure.database.entity.Stock;
@@ -49,12 +50,14 @@ public class StockService {
     private final KisStockConverter kisStockConverter;
     private final KISTokenService kisTokenService;
     private final StockRepository stockRepository;
+    private final TradeService tradeService;
 
     /**
      * 한국투자증권 시세 갱신 메소드
      *
      * @return 저장된 주식들의 종목코드, 종목이름, 현재가, 전일 대비, 전일 대비율
      */
+    @Transactional
     public List<StockPricesResponse> getStockPrices() {
         List<Stock> stocks = stockRepository.findAll();
 
@@ -93,7 +96,13 @@ public class StockService {
             if (stockApiResponse != null) {
                 KisStockPricesOutputResponse stockOutput = stockApiResponse.getOutput();
                 if (stockOutput != null) {
-                    return StockConverter.toStockPricesResponse(stock, stockOutput);
+                    StockPricesResponse stockPrice = StockConverter.toStockPricesResponse(stock, stockOutput);
+
+                    // 거래 상태 업데이트
+                    tradeService.checkTradeStatus(stock, stockPrice.getStckPrpr());
+                    log.info("Stock: {}, Current Price: {}", stock.getName(), stockPrice.getStckPrpr());
+
+                    return stockPrice;
                 }
             }
         } catch (Exception e) {
@@ -106,6 +115,7 @@ public class StockService {
     /**
      * 주식 ID를 기반으로 주식의 상세 정보를 가져오는 메소드
      */
+    @Transactional
     public StockPricesResponse getStockPrice(Long stockId) {
         Stock stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));

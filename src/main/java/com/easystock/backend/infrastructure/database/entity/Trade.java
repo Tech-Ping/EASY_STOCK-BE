@@ -5,6 +5,7 @@ import com.easystock.backend.infrastructure.database.entity.enums.TradeStatus;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +35,23 @@ public class Trade extends AuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_id", nullable = false)
     private Stock stock;
+
+    @Builder
+    public Trade(TradeStatus status, TradeType type, Integer quantity, Integer price, Member customer, Stock stock) {
+        this.status = status;
+        this.type = type;
+        this.quantity = quantity;
+        this.price = price;
+        this.customer = customer;
+        this.stock = stock;
+    }
+
+    public void cancelTrade(){
+        this.status = TradeStatus.CANCELED;
+    }
+
+    public void completeTrade(){
+        this.status = TradeStatus.COMPLETED;
+    }
+
 }
