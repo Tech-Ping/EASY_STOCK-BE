@@ -29,9 +29,9 @@ public class TradeController {
 
     @GetMapping
     @Operation(
-            summary = "거래 목록 조회 API - 회원의 거래 상태에 따른 거래 목록을 반환합니다. (입력 받은 상태가 없을 시 모든 거래 목록 반환)",
+            summary = "거래 목록 조회 API - 로그인한 회원의 거래 상태에 따른 거래 목록을 반환합니다. (입력 받은 상태가 없을 시 모든 거래 목록 반환)",
             security = @SecurityRequirement(name = "bearerAuth"))
-    public ApiResponse<List<TradeResponse>> getAllTrades(
+    public ApiResponse<List<TradeResponse>> getTradesByStatus(
             @Parameter(hidden = true)
             @AuthUser Long memberId,
             @RequestParam(required = false) TradeStatus status) {
@@ -61,15 +61,15 @@ public class TradeController {
         return ApiResponse.onSuccess(tradeService.cancelTrade(memberId, tradeId));
     }
 
-    @GetMapping("/status/{status}")
-    @Operation(
-            summary = "상태별 거래 목록 조회 API - 로그인한 사용자의 특정 상태에 따른 거래 목록을 반환합니다.",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    public ApiResponse<List<TradeResponse>> getTradesByStatus(
-            @Parameter(hidden = true)
-            @AuthUser Long memberId,
-            @PathVariable("status") TradeStatus status) {
-        return ApiResponse.onSuccess(tradeService.getTradesByStatus(memberId, status));
-    }
+//    @GetMapping("/status/{status}")
+//    @Operation(
+//            summary = "상태별 거래 목록 조회 API - 로그인한 사용자의 특정 상태에 따른 거래 목록을 반환합니다.",
+//            security = @SecurityRequirement(name = "bearerAuth"))
+//    public ApiResponse<List<TradeResponse>> getTradesByStatus(
+//            @Parameter(hidden = true)
+//            @AuthUser Long memberId,
+//            @PathVariable("status") TradeStatus status) {
+//        return ApiResponse.onSuccess(tradeService.getTradesByStatus(memberId, status));
+//    }
 
 }
