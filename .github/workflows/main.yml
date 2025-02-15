@@ -34,7 +34,7 @@ jobs:
 
       - name : Build Docker Image & Push to Docker Hub
         run: |
-          docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/
+          docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/easystock
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/easystock
           
       - name: executing remote ssh commands using password
