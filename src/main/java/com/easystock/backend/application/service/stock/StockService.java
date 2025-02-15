@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class StockService {
@@ -79,7 +78,7 @@ public class StockService {
     /**
      * 특정 주식의 실시간 시세를 가져오는 메소드
      */
-    private StockPricesResponse getStockPriceFromApi(Stock stock) {
+    public StockPricesResponse getStockPriceFromApi(Stock stock) {
         try {
             ResponseEntity<KisStockPricesResponse> kisResponse = kisStockConverter.exchangeRestTemplate(
                     "Bearer " + kisTokenService.getAccessToken(),

@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InventoryConverter {
-    public static Inventory toInventory(Trade trade, Member member, Stock stock) {
+    public static Inventory toInventory(Integer quantity, Integer totalPrice, Member member, Stock stock) {
         return Inventory.builder()
-                .quantity(trade.getQuantity())
-                .price(trade.getPrice())
+                .quantity(quantity)
+                .totalPrice(totalPrice)
                 .member(member)
                 .stock(stock)
                 .build();

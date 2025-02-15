@@ -1,8 +1,6 @@
 package com.easystock.backend.infrastructure.database.entity;
 
 import com.easystock.backend.infrastructure.database.entity.common.AuditingEntity;
-import com.easystock.backend.infrastructure.database.entity.enums.TradeStatus;
-import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +18,7 @@ public class Inventory extends AuditingEntity {
 
     private Integer quantity;
 
-    private Integer price;
+    private Integer totalPrice; // 유저가 해당 주식 구매 시 사용한 총 포인트를 의미
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -31,11 +29,17 @@ public class Inventory extends AuditingEntity {
     private Stock stock;
 
     @Builder
-    public Inventory(Integer quantity, Integer price, Member member, Stock stock) {
+    public Inventory(Integer quantity, Integer totalPrice, Member member, Stock stock) {
         this.quantity = quantity;
-        this.price = price;
+        this.totalPrice = totalPrice;
         this.member = member;
         this.stock = stock;
     }
 
+    public void updateQuantity(Integer quantity){
+        this.quantity += quantity;
+    }
+    public void updateTotalPrice(Integer totalPrice){
+        this.totalPrice += totalPrice;
+    }
 }
