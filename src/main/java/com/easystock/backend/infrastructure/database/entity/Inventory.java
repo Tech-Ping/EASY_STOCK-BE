@@ -42,5 +42,4 @@ public class Inventory extends AuditingEntity {
     public void updateTotalPrice(Integer totalPrice){
         this.totalPrice += totalPrice;
     }
-
 }

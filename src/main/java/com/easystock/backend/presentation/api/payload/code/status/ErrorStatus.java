@@ -51,8 +51,6 @@ public enum ErrorStatus implements BaseErrorCode {
     INSUFFICIENT_FUNDS(HttpStatus.BAD_REQUEST, "TRADE004", "유저의 잔액이 부족합니다."),
     INSUFFICIENT_STOCKS(HttpStatus.BAD_REQUEST, "TRADE005", "유저의 주식이 부족합니다.");
 
-
-
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

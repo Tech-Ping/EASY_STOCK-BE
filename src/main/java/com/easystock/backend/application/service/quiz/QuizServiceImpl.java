@@ -46,7 +46,7 @@ public class QuizServiceImpl implements QuizService{
     @Override
     @Transactional
     public QuizSubmitResponse submitAnswer(Long memberId, Long quizId, int inputIndex) {
-       MemberQuiz memberQuiz = memberQuizRepository.findByMemberIdAndQuizId(memberId, quizId);
+        MemberQuiz memberQuiz = memberQuizRepository.findByMemberIdAndQuizId(memberId, quizId);
 
         if (memberQuiz.isCompleted()) {
             int totalXp = memberRepository.findById(memberId).orElseThrow().getXpGauge();

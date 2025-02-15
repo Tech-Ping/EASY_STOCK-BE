@@ -56,6 +56,7 @@ public class StockService {
      *
      * @return 저장된 주식들의 종목코드, 종목이름, 현재가, 전일 대비, 전일 대비율
      */
+    @Transactional
     public List<StockPricesResponse> getStockPrices() {
         List<Stock> stocks = stockRepository.findAll();
 
@@ -113,6 +114,7 @@ public class StockService {
     /**
      * 주식 ID를 기반으로 주식의 상세 정보를 가져오는 메소드
      */
+    @Transactional
     public StockPricesResponse getStockPrice(Long stockId) {
         Stock stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
