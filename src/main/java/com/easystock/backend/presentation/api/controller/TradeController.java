@@ -71,5 +71,4 @@ public class TradeController {
             @PathVariable("status") TradeStatus status) {
         return ApiResponse.onSuccess(tradeService.getTradesByStatus(memberId, status));
     }
-
 }

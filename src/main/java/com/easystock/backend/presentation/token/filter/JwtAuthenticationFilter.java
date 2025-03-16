@@ -53,11 +53,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserAuthentication authentication = createUserAuthentication(memberId);
                 createAndSetWebAuthenticationDetails(request, authentication);
             } else {
-                throw new UnauthorizedTokenException();
+                handleUnAuthorizedResponse(response, "Invalid refresh token."); return;
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void handleUnAuthorizedResponse(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"" + message + "\"}");
     }
 
     private String getAccessToken(HttpServletRequest request) {
@@ -66,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(accessToken) && accessToken.startsWith(Constants.BEARER_PREFIX)) {
             return accessToken.substring(Constants.BEARER_PREFIX.length());
         }
-        throw new UnauthorizedTokenException();
+        return null;
     }
 
     private void createAndSetWebAuthenticationDetails(HttpServletRequest request, UserAuthentication authentication) {
