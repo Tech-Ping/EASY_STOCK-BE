@@ -48,9 +48,10 @@ jobs:
             sudo touch docker-compose-prod.yml
             echo "${{ vars.DOCKER_COMPOSE }}" | sudo tee docker-compose-prod.yml > /dev/null
             sudo touch .env
-            echo "${{ vars.ENV_FILE }}" | sudo tee .env > /dev/null
+            echo "${{ secrets.ENV_FILE }}" | sudo tee .env > /dev/null
             sudo chmod 666 /var/run/docker.sock
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/easystock
+            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/easystockflask
             docker-compose -f docker-compose-prod.yml --env-file ./.env up -d
             docker image prune -f
