@@ -1,6 +1,4 @@
-package com.easystock.backend.application.service.FCM;
-
-import com.easystock.backend.infrastructure.database.repository.MemberDeviceRepository;
+package com.easystock.backend.application.service.fcm;
 
 
 public interface MemberDeviceService {

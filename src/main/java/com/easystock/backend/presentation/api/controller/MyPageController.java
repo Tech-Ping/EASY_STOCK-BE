@@ -1,8 +1,7 @@
 package com.easystock.backend.presentation.api.controller;
 
-import com.easystock.backend.application.service.FCM.MemberDeviceService;
+import com.easystock.backend.application.service.fcm.MemberDeviceService;
 import com.easystock.backend.application.service.mypage.MyPageService;
-import com.easystock.backend.application.service.stock.StockInfoInitializeService;
 import com.easystock.backend.presentation.api.dto.request.AddFcmTokenRequest;
 import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
 import com.easystock.backend.presentation.api.dto.response.MonthlyStockInfoResponse;
