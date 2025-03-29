@@ -1,6 +1,6 @@
-package com.easystock.backend.infrastructure.kis.token;
+package com.easystock.backend.infrastructure.finance.kis.token;
 
-import com.easystock.backend.infrastructure.kis.response.KisTokenResponse;
+import com.easystock.backend.infrastructure.finance.kis.response.KisTokenResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;

@@ -1,4 +1,4 @@
-package com.easystock.backend.application.service.FCM;
+package com.easystock.backend.application.service.fcm;
 
 import com.easystock.backend.presentation.config.FirebaseConfig;
 import com.google.firebase.messaging.FirebaseMessaging;

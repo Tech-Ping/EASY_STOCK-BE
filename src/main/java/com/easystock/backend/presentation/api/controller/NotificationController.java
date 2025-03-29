@@ -1,8 +1,8 @@
 package com.easystock.backend.presentation.api.controller;
 
-import com.easystock.backend.application.service.FCM.NotificationService;
+import com.easystock.backend.application.service.fcm.NotificationService;
 import com.easystock.backend.presentation.api.payload.ApiResponse;
-import com.easystock.backend.util.FCMAlarmUtil;
+import com.easystock.backend.util.FcmAlarmUtils;
 import com.google.firebase.messaging.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,7 +30,7 @@ public class NotificationController {
     public ApiResponse<String> sendTest(
             @RequestParam String fcmToken
     ){
-        Message message = FCMAlarmUtil.buildWebpushMessage(
+        Message message = FcmAlarmUtils.buildWebpushMessage(
                  fcmToken,
                  "[💸이지스톡💸] 푸시 알림 테스트 💫",
                 "잘 전송이 되나 확인되는 FCM 테스트 메시지입니다! 😊😊",
