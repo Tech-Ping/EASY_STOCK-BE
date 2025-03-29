@@ -1,4 +1,4 @@
-package com.easystock.backend.application.service.fcm;
+package com.easystock.backend.application.service.FCM;
 
 import com.easystock.backend.infrastructure.database.entity.MemberDevice;
 import com.easystock.backend.infrastructure.database.entity.key.MemberDeviceKey;

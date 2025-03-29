@@ -1,7 +1,10 @@
-package com.easystock.backend.infrastructure.finance.kis.converter;
+package com.easystock.backend.infrastructure.kis.converter;
+
+import com.easystock.backend.infrastructure.kis.response.KisStockPricesResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpHeaders;
