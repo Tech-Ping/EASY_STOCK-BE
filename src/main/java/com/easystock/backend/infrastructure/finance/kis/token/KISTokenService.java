@@ -1,4 +1,4 @@
-package com.easystock.backend.infrastructure.kis.token;
+package com.easystock.backend.infrastructure.finance.kis.token;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

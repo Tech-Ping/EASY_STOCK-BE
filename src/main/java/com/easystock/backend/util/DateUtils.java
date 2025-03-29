@@ -1,6 +1,7 @@
 package com.easystock.backend.util;
 
 import java.time.LocalDate;
+<<<<<<< HEAD
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -10,6 +11,10 @@ public class DateUtils {
             DateTimeFormatter.ofPattern("yyyy년 M월", Locale.KOREAN);
     private static final DateTimeFormatter DOT_DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy.MM.dd");
+=======
+
+public class DateUtils {
+>>>>>>> afe8b7548b3ba295fea1402ae81cbe6f147189b0
 
     /**
      * 오늘 날짜 기준으로 한 달 전의 유효한 날짜를 반환합니다.
@@ -30,6 +35,7 @@ public class DateUtils {
         int day = Math.min(date.getDayOfMonth(), oneMonthAgo.lengthOfMonth());
         return oneMonthAgo.withDayOfMonth(day);
     }
+<<<<<<< HEAD
 
     /**
      * 기준 연월 기준으로 YYYY년 mm월로 포맷하여 반환합니다.
@@ -45,4 +51,6 @@ public class DateUtils {
         return date.format(DOT_DATE_FORMATTER);
     }
 
+=======
+>>>>>>> afe8b7548b3ba295fea1402ae81cbe6f147189b0
 }
