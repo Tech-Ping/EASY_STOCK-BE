@@ -2,6 +2,7 @@ package com.easystock.backend.presentation.api.controller;
 
 import com.easystock.backend.application.service.FCM.MemberDeviceService;
 import com.easystock.backend.application.service.mypage.MyPageService;
+import com.easystock.backend.application.service.stock.StockInfoInitializeService;
 import com.easystock.backend.presentation.api.dto.request.AddFcmTokenRequest;
 import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
 import com.easystock.backend.presentation.api.dto.response.MonthlyStockInfoResponse;
@@ -50,7 +51,7 @@ public class MyPageController {
 
     @GetMapping("/status/bookmarked")
     @Operation(
-            summary = "내가 투자한 주식 현황 조회 API - 회원이 마이페이지에서 내가 투자한 주식 현황을 조회합니다.",
+            summary = "내가 북마크한 주식 현황 조회 API - 회원이 마이페이지에서 내가 투자한 주식 현황을 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     public ApiResponse<List<MonthlyStockInfoResponse>> getMyBookmarkTickersCurrentStatus(
@@ -88,4 +89,5 @@ public class MyPageController {
     ){
         return ApiResponse.onSuccess(memberDeviceService.removeDevice(memberId, fcmToken));
     }
+
 }

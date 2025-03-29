@@ -1,5 +1,6 @@
 package com.easystock.backend.application.service.mypage;
 
+import com.easystock.backend.application.service.stock.StockInfoInitializeService;
 import com.easystock.backend.application.service.stock.StockService;
 import com.easystock.backend.aspect.exception.QuizException;
 import com.easystock.backend.infrastructure.database.entity.Inventory;
@@ -17,12 +18,13 @@ import com.easystock.backend.presentation.api.dto.response.GetMemberProfileRespo
 import com.easystock.backend.presentation.api.dto.response.MonthlyStockInfoResponse;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
+import com.easystock.backend.util.DateUtils;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service @AllArgsConstructor
 public class MyPageServiceImpl implements MyPageService {
@@ -31,6 +33,9 @@ public class MyPageServiceImpl implements MyPageService {
     private final StockRecordRepository stockRecordRepository;
     private final BookmarkRepository bookmarkRepository;
     private final StockService stockService;
+
+    private static final Logger log = LoggerFactory.getLogger(MyPageServiceImpl.class);
+
 
     @Override
     public GetMemberProfileResponse getMyProfile(Long memberId){
@@ -58,7 +63,7 @@ public class MyPageServiceImpl implements MyPageService {
                     int lastMonthPrice = stockRecordRepository
                             .findRecentBefore(
                                     stockCode,
-                                    LocalDate.now().minusMonths(1)
+                                    DateUtils.getValidOneMonthAgo()
                             )
                             .map(StockRecord::getClosePrice)
                             .orElse(0);
@@ -85,12 +90,12 @@ public class MyPageServiceImpl implements MyPageService {
                     String stockName = currentPriceInfo.getStockName();
 
                     int lastMonthPrice = stockRecordRepository
-                            .findRecentBefore(stockCode, LocalDate.now().minusMonths(1))
+                            .findRecentBefore(stockCode, DateUtils.getValidOneMonthAgo())
                             .map(StockRecord::getClosePrice)
                             .orElse(0);
 
                     Double changeRate = calculateChangeRate(currentPrice, lastMonthPrice);
-
+                    log.info("{} 현재가: {}, 한달 전 종가: {}", stockCode, currentPrice, lastMonthPrice);
                     return StockRecordConverter.toMonthlyStockInfoResponse(
                             stockCode, stockName, currentPrice, changeRate
                     );
@@ -100,6 +105,9 @@ public class MyPageServiceImpl implements MyPageService {
 
     private Double calculateChangeRate(int currentPrice, int lastMonthPrice) {
         if (lastMonthPrice == 0) return null;
-        return (double) ((currentPrice - lastMonthPrice) / lastMonthPrice) * 100;
+
+        double rawRate = (currentPrice - lastMonthPrice) * 100.0 / lastMonthPrice;
+        return Math.round(rawRate * 100) / 100.0;
     }
+
 }

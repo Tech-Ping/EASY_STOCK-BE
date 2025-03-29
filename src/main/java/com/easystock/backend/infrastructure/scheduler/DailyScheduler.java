@@ -20,14 +20,14 @@ public class DailyScheduler {
     private final NaverFinanceCrawler naverFinanceCrawler;
     private static final Logger log = LoggerFactory.getLogger(DailyScheduler.class);
 
-    @Scheduled(cron = "0 51 2 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void saveDailyStockPrices() {
         List<String> stockCodes = Constants.STOCK_CODES;
         LocalDate today = LocalDate.now();
 
         for(String code: stockCodes) {
             try {
-                int closePrice = naverFinanceCrawler.getClosePrice(code);
+                int closePrice = naverFinanceCrawler.getTodayClosePrice(code);
                 boolean exists = stockRecordRepository.existsByStockCodeAndDate(code, today);
                 if(!exists) {
                     stockRecordRepository.save(StockRecordConverter.toRecord(code, today, closePrice));

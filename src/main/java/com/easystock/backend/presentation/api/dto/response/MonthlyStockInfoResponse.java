@@ -17,5 +17,5 @@ public class MonthlyStockInfoResponse {
     private int currentPrice;
 
     @Schema(description = "저번 달 대비 변화율 (%)", example = "10.3")
-    private Double lastMonthChangeRate;
+    private String lastMonthChangeRate;
 }

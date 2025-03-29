@@ -2,6 +2,7 @@ package com.easystock.backend.presentation.api.dto.converter;
 
 import com.easystock.backend.infrastructure.database.entity.StockRecord;
 import com.easystock.backend.presentation.api.dto.response.MonthlyStockInfoResponse;
+import com.easystock.backend.util.FormatUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -25,7 +26,7 @@ public class StockRecordConverter {
                 .stockCode(stockCode)
                 .stockName(stockName)
                 .currentPrice(currentPrice)
-                .lastMonthChangeRate(lastMonthChangeRate)
+                .lastMonthChangeRate(FormatUtils.formatRatePercentage(lastMonthChangeRate))
                 .build();
     }
 }
