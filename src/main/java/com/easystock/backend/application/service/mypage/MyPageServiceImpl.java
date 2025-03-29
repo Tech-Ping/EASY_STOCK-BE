@@ -5,6 +5,8 @@ import com.easystock.backend.aspect.exception.QuizException;
 import com.easystock.backend.infrastructure.database.entity.Inventory;
 import com.easystock.backend.infrastructure.database.entity.Member;
 import com.easystock.backend.infrastructure.database.entity.StockRecord;
+import com.easystock.backend.infrastructure.database.entity.mapping.Bookmark;
+import com.easystock.backend.infrastructure.database.repository.BookmarkRepository;
 import com.easystock.backend.infrastructure.database.repository.InventoryRepository;
 import com.easystock.backend.infrastructure.database.repository.StockRecordRepository;
 import com.easystock.backend.presentation.api.dto.converter.MemberConverter;
@@ -27,6 +29,7 @@ public class MyPageServiceImpl implements MyPageService {
     private final MemberRepository memberRepository;
     private final InventoryRepository inventoryRepository;
     private final StockRecordRepository stockRecordRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final StockService stockService;
 
     @Override
@@ -62,6 +65,35 @@ public class MyPageServiceImpl implements MyPageService {
 
                     Double lastMonthChangeRate = calculateChangeRate(currentPrice, lastMonthPrice);
                     return StockRecordConverter.toMonthlyStockInfoResponse(stockCode, stockName, currentPrice, lastMonthChangeRate);
+                })
+                .toList();
+    }
+
+    @Override
+    public List<MonthlyStockInfoResponse> getMyBookmarkTickersCurrentStatus(Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()-> new QuizException(ErrorStatus.MEMBER_NOT_FOUND));
+        List<Bookmark> bookmarks = bookmarkRepository.findAllByMember(member);
+
+        return bookmarks.stream()
+                .map(bookmark -> {
+                    Long stockId = bookmark.getStock().getId();
+                    String stockCode = bookmark.getStock().getCode();
+
+                    StockPricesResponse currentPriceInfo = stockService.getStockPrice(stockId);
+                    int currentPrice = Math.toIntExact(currentPriceInfo.getStckPrpr());
+                    String stockName = currentPriceInfo.getStockName();
+
+                    int lastMonthPrice = stockRecordRepository
+                            .findRecentBefore(stockCode, LocalDate.now().minusMonths(1))
+                            .map(StockRecord::getClosePrice)
+                            .orElse(0);
+
+                    Double changeRate = calculateChangeRate(currentPrice, lastMonthPrice);
+
+                    return StockRecordConverter.toMonthlyStockInfoResponse(
+                            stockCode, stockName, currentPrice, changeRate
+                    );
                 })
                 .toList();
     }

@@ -8,4 +8,6 @@ import java.util.List;
 public interface MyPageService {
     GetMemberProfileResponse getMyProfile(Long memberId);
     List<MonthlyStockInfoResponse> getMyCurrentStockStatus(Long memberId);
+
+    List<MonthlyStockInfoResponse> getMyBookmarkTickersCurrentStatus(Long memberId);
 }

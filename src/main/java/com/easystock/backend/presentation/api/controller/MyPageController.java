@@ -36,7 +36,7 @@ public class MyPageController {
         return ApiResponse.onSuccess(myPageService.getMyProfile(memberId));
     }
 
-    @GetMapping("/status/trade-stocks")
+    @GetMapping("/status/stocks")
     @Operation(
             summary = "내가 투자한 주식 현황 조회 API - 회원이 마이페이지에서 내가 투자한 주식 현황을 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
@@ -46,6 +46,18 @@ public class MyPageController {
             @AuthUser Long memberId
     ){
         return ApiResponse.onSuccess(myPageService.getMyCurrentStockStatus(memberId));
+    }
+
+    @GetMapping("/status/bookmarked")
+    @Operation(
+            summary = "내가 투자한 주식 현황 조회 API - 회원이 마이페이지에서 내가 투자한 주식 현황을 조회합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    public ApiResponse<List<MonthlyStockInfoResponse>> getMyBookmarkTickersCurrentStatus(
+            @Parameter(hidden = true)
+            @AuthUser Long memberId
+    ){
+        return ApiResponse.onSuccess(myPageService.getMyBookmarkTickersCurrentStatus(memberId));
     }
 
     @PostMapping("/fcm")

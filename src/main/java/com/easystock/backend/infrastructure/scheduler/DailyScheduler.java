@@ -20,7 +20,7 @@ public class DailyScheduler {
     private final NaverFinanceCrawler naverFinanceCrawler;
     private static final Logger log = LoggerFactory.getLogger(DailyScheduler.class);
 
-    @Scheduled(cron = "0 40 2 * * *")
+    @Scheduled(cron = "0 51 2 * * *")
     public void saveDailyStockPrices() {
         List<String> stockCodes = Constants.STOCK_CODES;
         LocalDate today = LocalDate.now();
