@@ -40,6 +40,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     /* STOCK exception */
     STOCK_NOT_FOUND(HttpStatus.BAD_REQUEST, "STOCK001", "해당하는 주식 정보가 없습니다."),
+    NO_STOCK_OWNED(HttpStatus.BAD_REQUEST, "STOCK002", "보유하고 있는 주식이 없습니다."),
 
     /* LEVEL exception */
     LEVELUP_CONDITION_UNSATISFIED(HttpStatus.BAD_REQUEST, "LEVELUP001", "레벨업 조건 미충족으로 레벨업에 실패하였습니다."),
