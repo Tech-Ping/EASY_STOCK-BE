@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
                 )
                 .authorizeHttpRequests((requests)-> requests
-                        .requestMatchers("/api/auth/**", "/api/test/**", "/swagger-ui/**", "/v3/api-docs/**", "/token/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/token/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 )

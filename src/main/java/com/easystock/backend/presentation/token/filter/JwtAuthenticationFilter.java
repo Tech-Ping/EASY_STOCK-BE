@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     private static final List<String> EXCLUDED_PATHS = List.of(
-            "/api/auth", "/api/test", "/swagger-ui/", "/token", "/v3/api-docs"
+            "/api/auth", "/swagger-ui/", "/token", "/v3/api-docs"
     );
 
     @Override

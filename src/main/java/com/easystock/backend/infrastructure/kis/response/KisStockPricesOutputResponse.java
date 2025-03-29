@@ -1,4 +1,4 @@
-package com.easystock.backend.infrastructure.finance.kis.response;
+package com.easystock.backend.infrastructure.kis.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
