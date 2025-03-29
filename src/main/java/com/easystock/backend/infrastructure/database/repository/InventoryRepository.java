@@ -18,6 +18,10 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     @Query("SELECT COALESCE(i.quantity, 0) FROM Inventory i WHERE i.member = :member AND i.stock = :stock")
     int findStockQuantityByMemberAndStock(@Param("member") Member member, @Param("stock") Stock stock);
 
+<<<<<<< HEAD
+    List<Inventory> findAllByMember(Member member);
+=======
     Optional<List<Inventory>> findByMemberId(Long memberId);
 
+>>>>>>> d93513166a63cc6e39300d2834dce644eea9205e
 }

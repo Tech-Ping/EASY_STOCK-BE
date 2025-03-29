@@ -2,9 +2,9 @@ package com.easystock.backend.presentation.api.dto.converter;
 
 import com.easystock.backend.infrastructure.database.entity.Stock;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
-import com.easystock.backend.infrastructure.kis.response.KisStockPricesOutputResponse;
-import com.easystock.backend.infrastructure.kis.response.KisStockQuotesOutput1Response;
-import com.easystock.backend.infrastructure.kis.response.KisStockQuotesOutput2Response;
+import com.easystock.backend.infrastructure.finance.kis.response.KisStockPricesOutputResponse;
+import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput1Response;
+import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput2Response;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import org.springframework.stereotype.Component;
