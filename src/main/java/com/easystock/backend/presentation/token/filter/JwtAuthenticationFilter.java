@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.easystock.backend.presentation.token.UserAuthentication.createUserAuthentication;
 
@@ -26,38 +27,54 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtGenerator jwtGenerator;
     private final JwtProvider jwtProvider;
 
+    private static final List<String> EXCLUDED_PATHS = List.of(
+            "/api/auth", "/swagger-ui/", "/token", "/v3/api-docs"
+    );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain
     ) throws ServletException, IOException{
         String path = request.getRequestURI();
-
-        if(path.contains("/api/auth") || path.contains("/swagger-ui/") || path.contains("/token") || path.contains("/v3/api-docs")) {
+        if(isExcludedPath(path)) {
             filterChain.doFilter(request, response);
             return;
         }
-        final String accessToken = getAccessToken(request);
+
+        String accessToken = getAccessToken(request);
+        if(!StringUtils.hasText(accessToken)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             if (jwtGenerator.validateAccessToken(accessToken)) {
                 Long memberId = jwtProvider.getSubject(accessToken);
-                UserAuthentication authentication = createUserAuthentication(memberId);
-                createAndSetWebAuthenticationDetails(request, authentication);
+                UserAuthentication authentication = UserAuthentication.createUserAuthentication(memberId);
+                setAuthentication(request, authentication);
             }
         } catch (UnauthorizedTokenException ex) {
             String refreshToken = getRefreshToken(request);
-            if (refreshToken != null && jwtGenerator.validateRefreshToken(refreshToken)) {
+            if (StringUtils.hasText(refreshToken) && jwtGenerator.validateRefreshToken(refreshToken)) {
                 Long memberId = jwtProvider.getMemberIdFromRefreshToken(refreshToken);
                 String newAccessToken = jwtGenerator.generateAccessToken(memberId);
                 response.setHeader(Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX + newAccessToken);
-                UserAuthentication authentication = createUserAuthentication(memberId);
-                createAndSetWebAuthenticationDetails(request, authentication);
+                UserAuthentication authentication = UserAuthentication.createUserAuthentication(memberId);
+                setAuthentication(request, authentication);
             } else {
-                throw new UnauthorizedTokenException();
-            }
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"Invalid or missing tokens.\"}");
+                return;            }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+
+    private boolean isExcludedPath(String path) {
+        return EXCLUDED_PATHS.stream().anyMatch(path::contains);
     }
 
     private String getAccessToken(HttpServletRequest request) {
@@ -66,17 +83,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(accessToken) && accessToken.startsWith(Constants.BEARER_PREFIX)) {
             return accessToken.substring(Constants.BEARER_PREFIX.length());
         }
-        throw new UnauthorizedTokenException();
+        return null;
     }
 
-    private void createAndSetWebAuthenticationDetails(HttpServletRequest request, UserAuthentication authentication) {
-        WebAuthenticationDetailsSource webAuthenticationDetailsSource = new WebAuthenticationDetailsSource();
-        WebAuthenticationDetails webAuthenticationDetails = webAuthenticationDetailsSource.buildDetails(request);
-        authentication.setDetails(webAuthenticationDetails);
-
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
-
+    private void setAuthentication(HttpServletRequest request, UserAuthentication authentication) {
+        WebAuthenticationDetailsSource source = new WebAuthenticationDetailsSource();
+        WebAuthenticationDetails details = source.buildDetails(request);
+        authentication.setDetails(details);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private String getRefreshToken(HttpServletRequest request) {
