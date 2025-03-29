@@ -19,4 +19,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     int findStockQuantityByMemberAndStock(@Param("member") Member member, @Param("stock") Stock stock);
 
     List<Inventory> findAllByMember(Member member);
+
+    Optional<List<Inventory>> findByMemberId(Long memberId);
 }
