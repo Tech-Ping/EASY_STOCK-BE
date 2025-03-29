@@ -1,12 +1,15 @@
 package com.easystock.backend.infrastructure.database.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@Getter
+@Entity
+@Builder
+@RequiredArgsConstructor @AllArgsConstructor
+@Table(name = "stock_record")
 public class StockRecord {
 
     @Id
