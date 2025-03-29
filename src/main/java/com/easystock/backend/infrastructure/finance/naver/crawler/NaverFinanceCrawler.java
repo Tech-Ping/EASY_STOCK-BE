@@ -17,26 +17,31 @@ public class NaverFinanceCrawler {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
     public static int getClosePrice(String stockCode) {
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+        int maxPage = 3;
+
         try {
-            Document doc = Jsoup.connect(NAVER_FINANCE_URL + stockCode)
-                    .userAgent("Mozilla/5.0")
-                    .get();
+            for (int page = 1; page <= maxPage; page++) {
+                String url = NAVER_FINANCE_URL + stockCode + "&page=" + page;
+                Document doc = Jsoup.connect(url)
+                        .userAgent("Mozilla/5.0")
+                        .get();
 
-            Elements rows = doc.select("table.type2 tr");
-            LocalDate oneMonthAgoData = LocalDate.now().minusMonths(1);
+                Elements rows = doc.select("table.type2 tr");
 
-            for(Element row: rows) {
-                Elements tds = row.select("td");
+                for (Element row : rows) {
+                    Elements tds = row.select("td");
 
-                if(tds.size() >= 2) {
-                    String dateStr = tds.get(0).text();
-                    String priceStr = tds.get(1).text().replace(",", "");
+                    if (tds.size() >= 2) {
+                        String dateStr = tds.get(0).text().trim();
+                        String priceStr = tds.get(1).text().replace(",", "").trim();
 
-                    if (!dateStr.isEmpty() && !priceStr.isEmpty()) {
-                        LocalDate rowDate = LocalDate.parse(dateStr, FORMATTER);
+                        if (!dateStr.isEmpty() && !priceStr.isEmpty()) {
+                            LocalDate rowDate = LocalDate.parse(dateStr, FORMATTER);
 
-                        if (!rowDate.isAfter(oneMonthAgoData)) {
-                            return Integer.parseInt(priceStr);
+                            if (!rowDate.isAfter(oneMonthAgo)) {
+                                return Integer.parseInt(priceStr);
+                            }
                         }
                     }
                 }
