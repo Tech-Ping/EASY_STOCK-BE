@@ -17,4 +17,14 @@ public class FormatUtils {
         String sign = rounded > 0 ? "+" : ""; // 음수는 자동으로 - 붙음
         return sign + rounded + "%";
     }
+
+    /**
+     * 변화율을 계산합니다.
+     */
+    public static Double calculateChangeRate(int currentPrice, int lastPrice) {
+        if (lastPrice == 0) return null;
+
+        double rawRate = (currentPrice - lastPrice) * 100.0 / lastPrice;
+        return Math.round(rawRate * 100) / 100.0;
+    }
 }

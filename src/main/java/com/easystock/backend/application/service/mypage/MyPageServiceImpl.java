@@ -1,22 +1,16 @@
 package com.easystock.backend.application.service.mypage;
 
-import com.easystock.backend.application.service.stock.StockInfoInitializeService;
 import com.easystock.backend.application.service.stock.StockService;
 import com.easystock.backend.aspect.exception.QuizException;
 import com.easystock.backend.infrastructure.database.entity.Inventory;
 import com.easystock.backend.infrastructure.database.entity.Member;
 import com.easystock.backend.infrastructure.database.entity.StockRecord;
 import com.easystock.backend.infrastructure.database.entity.mapping.Bookmark;
-import com.easystock.backend.infrastructure.database.repository.BookmarkRepository;
-import com.easystock.backend.infrastructure.database.repository.InventoryRepository;
-import com.easystock.backend.infrastructure.database.repository.StockRecordRepository;
+import com.easystock.backend.infrastructure.database.repository.*;
 import com.easystock.backend.presentation.api.dto.converter.MemberConverter;
 import com.easystock.backend.aspect.exception.AuthException;
-import com.easystock.backend.infrastructure.database.repository.MemberRepository;
 import com.easystock.backend.presentation.api.dto.converter.StockRecordConverter;
-import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
-import com.easystock.backend.presentation.api.dto.response.MonthlyStockInfoResponse;
-import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
+import com.easystock.backend.presentation.api.dto.response.*;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import com.easystock.backend.util.DateUtils;
 import lombok.AllArgsConstructor;
@@ -24,7 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.YearMonth;
 import java.util.List;
+
+import static com.easystock.backend.util.FormatUtils.calculateChangeRate;
 
 @Service @AllArgsConstructor
 public class MyPageServiceImpl implements MyPageService {
@@ -33,6 +30,7 @@ public class MyPageServiceImpl implements MyPageService {
     private final StockRecordRepository stockRecordRepository;
     private final BookmarkRepository bookmarkRepository;
     private final StockService stockService;
+    private final MonthlyReportRepository monthlyReportRepository;
 
     private static final Logger log = LoggerFactory.getLogger(MyPageServiceImpl.class);
 
@@ -45,9 +43,16 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
     @Override
+    public MonthlyReportResponse getMyMonthlyTradeReport(Long memberId, YearMonth yearMonth) {
+        return monthlyReportRepository.findByMemberIdAndYearMonth(memberId, yearMonth)
+                .map(MonthlyReportResponse::from)
+                .orElseThrow(() -> new QuizException(ErrorStatus.REPORT_NOT_FOUND));
+    }
+
+    @Override
     public List<MonthlyStockInfoResponse> getMyCurrentStockStatus(Long memberId){
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new QuizException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(()-> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
 
         List<Inventory> myStocks = inventoryRepository.findAllByMember(member);
 
@@ -77,7 +82,7 @@ public class MyPageServiceImpl implements MyPageService {
     @Override
     public List<MonthlyStockInfoResponse> getMyBookmarkTickersCurrentStatus(Long memberId){
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new QuizException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(()-> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
         List<Bookmark> bookmarks = bookmarkRepository.findAllByMember(member);
 
         return bookmarks.stream()
@@ -101,13 +106,6 @@ public class MyPageServiceImpl implements MyPageService {
                     );
                 })
                 .toList();
-    }
-
-    private Double calculateChangeRate(int currentPrice, int lastMonthPrice) {
-        if (lastMonthPrice == 0) return null;
-
-        double rawRate = (currentPrice - lastMonthPrice) * 100.0 / lastMonthPrice;
-        return Math.round(rawRate * 100) / 100.0;
     }
 
 }

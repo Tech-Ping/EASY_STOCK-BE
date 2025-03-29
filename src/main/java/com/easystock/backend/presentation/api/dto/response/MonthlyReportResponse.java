@@ -6,7 +6,8 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Getter @Builder
+@Getter
+@Builder
 public class MonthlyReportResponse {
     @Schema(description = "연월 정보", example = "2025년 3월")
     private String reportDate;
