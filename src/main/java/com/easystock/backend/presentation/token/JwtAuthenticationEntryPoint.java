@@ -1,6 +1,5 @@
 package com.easystock.backend.presentation.token;
 
-import com.easystock.backend.aspect.exception.UnauthorizedTokenException;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +34,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(ENCODING_TYPE);
         response.setStatus(httpStatus.value());
+
+        AuthErrorResponse errorResponse = AuthErrorResponse.from(errorStatus);
         PrintWriter writer = response.getWriter();
-        writer.write(objectMapper.writeValueAsString(new UnauthorizedTokenException()));
+        writer.write(objectMapper.writeValueAsString(errorResponse));
     }
 }
