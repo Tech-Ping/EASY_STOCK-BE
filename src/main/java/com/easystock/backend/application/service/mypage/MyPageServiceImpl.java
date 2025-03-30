@@ -50,8 +50,9 @@ public class MyPageServiceImpl implements MyPageService {
 
     @Override
     public MonthlyReportResponse getMyMonthlyTradeReport(Long memberId, YearMonth yearMonth) {
-        int year = yearMonth.getYear();
-        int month = yearMonth.getMonthValue();
+        YearMonth targetMonth = yearMonth.minusMonths(1);
+        int year = targetMonth.getYear();
+        int month = targetMonth.getMonthValue();
 
         return monthlyReportRepository.findByMemberIdAndYearAndMonth(memberId, year, month)
                 .map(report -> {
@@ -67,7 +68,7 @@ public class MyPageServiceImpl implements MyPageService {
                         );
 
                         return MonthlyReportResponse.builder()
-                                .reportDate(DateUtils.formatYearMonth(yearMonth))
+                                .reportDate(DateUtils.formatYearMonth(targetMonth))
                                 .investmentType(InvestmentTypeInfo.from(report.getInvestmentType()))
                                 .topStocks(topStocks)
                                 .profitGraph(profitGraph)
@@ -98,7 +99,7 @@ public class MyPageServiceImpl implements MyPageService {
                     String stockName = currentPriceInfo.getStockName();
 
                     int lastMonthPrice = stockRecordRepository
-                            .findRecentBefore(
+                            .findTopByStockCodeAndDateBeforeOrderByDateDesc(
                                     stockCode,
                                     DateUtils.getValidOneMonthAgo()
                             )
@@ -127,7 +128,7 @@ public class MyPageServiceImpl implements MyPageService {
                     String stockName = currentPriceInfo.getStockName();
 
                     int lastMonthPrice = stockRecordRepository
-                            .findRecentBefore(stockCode, DateUtils.getValidOneMonthAgo())
+                            .findTopByStockCodeAndDateBeforeOrderByDateDesc(stockCode, DateUtils.getValidOneMonthAgo())
                             .map(StockRecord::getClosePrice)
                             .orElse(0);
 

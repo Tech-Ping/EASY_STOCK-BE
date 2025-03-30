@@ -42,7 +42,12 @@ public class MyPageController {
 
     @GetMapping("/monthly-report")
     @Operation(
-            summary = "매월 투자 리포트 조회 API - 회원의 이번 달 투자 리포트를 조회합니다.",
+            summary = "매월 투자 리포트 조회 API - 회원의 지난 달 투자 리포트를 조회합니다.",
+            description = """
+                     \s
+                     3월달에 조회 시 2월달의 회원 투자 경향 수집 데이터가 보여집니다. \s
+                    \s"
+                """,
             security = @SecurityRequirement(name = "bearerAuth")
     )
     public ApiResponse<MonthlyReportResponse> getMyMonthlyTradeReport(

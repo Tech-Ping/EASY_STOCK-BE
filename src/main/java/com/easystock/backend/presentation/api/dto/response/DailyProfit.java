@@ -16,13 +16,14 @@ public class DailyProfit {
     private int realProfit;
     private String realProfitRate;
 
-    public static DailyProfit from(LocalDate date, int totalInvestment, int realProfit) {
-        Double profitRate = totalInvestment == 0 ? null : (realProfit * 100.0) / totalInvestment;
+    public static DailyProfit from(LocalDate date, int totalInvestment, int realProfit, int totalEvaluated, int totalInvested) {
         return DailyProfit.builder()
                 .date(DateUtils.formatDateWithDot(date))
                 .totalTradeAmount(totalInvestment)
                 .realProfit(realProfit)
-                .realProfitRate(FormatUtils.formatRatePercentage(profitRate))
+                .realProfitRate(FormatUtils.formatRatePercentage(
+                        FormatUtils.calculateChangeRate(totalEvaluated, totalInvested)
+                ))
                 .build();
     }
 

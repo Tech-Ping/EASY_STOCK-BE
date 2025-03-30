@@ -6,12 +6,15 @@ import com.easystock.backend.infrastructure.database.entity.StockRecord;
 import com.easystock.backend.infrastructure.database.repository.InventoryRepository;
 import com.easystock.backend.infrastructure.database.repository.StockRecordRepository;
 import com.easystock.backend.presentation.api.dto.response.DailyProfit;
+import com.easystock.backend.util.FormatUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +26,8 @@ public class MonthlyGraphDataCollector {
         List<Inventory> inventories = inventoryRepository.findAllByMember(member);
         List<DailyProfit> result = new ArrayList<>();
 
+        Map<String, Integer> lastClosePriceMap = new HashMap<>();
+
         for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
             int totalInvested = 0;
             int totalEvaluated = 0;
@@ -33,17 +38,20 @@ public class MonthlyGraphDataCollector {
                 String stockCode = inventory.getStock().getCode();
 
                 int closePrice = stockRecordRepository
-                        .findRecentBefore(stockCode, date)
+                        .findTopByStockCodeAndDateBeforeOrderByDateDesc(stockCode, date)
                         .map(StockRecord::getClosePrice)
-                        .orElse(0);
+                        .orElse(lastClosePriceMap.getOrDefault(stockCode, 0));
+
+                if (closePrice != 0) {
+                    lastClosePriceMap.put(stockCode, closePrice);
+                }
 
                 totalInvested += avgPurchasePrice * quantity;
                 totalEvaluated += closePrice * quantity;
             }
 
             int realProfit = totalEvaluated - totalInvested;
-
-            result.add(DailyProfit.from(date, totalInvested, realProfit));
+            result.add(DailyProfit.from(date, totalInvested, realProfit, totalEvaluated, totalInvested));
         }
         return result;
     }

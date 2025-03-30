@@ -29,11 +29,11 @@ public class StockInfoInitializeService {
     public boolean fillInitialStockRecords() {
         List<String> stockCodes = Constants.STOCK_CODES;
         LocalDate today = LocalDate.now();
-        LocalDate oneMonthAgo = today.minusMonths(1);
+        LocalDate twoMonthAgo = today.minusMonths(2);
         boolean success = true;
 
         for (String code : stockCodes) {
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= 10; i++) {
                 try {
                     String url = NAVER_FINANCE_URL + code + "&page=" + i;
                     Document doc = Jsoup.connect(url)
@@ -52,7 +52,7 @@ public class StockInfoInitializeService {
                             if (!dateStr.isEmpty() && !priceStr.isEmpty()) {
                                 LocalDate rowDate = LocalDate.parse(dateStr, FORMATTER);
 
-                                if (!rowDate.isBefore(oneMonthAgo) && !rowDate.isAfter(today)) {
+                                if (!rowDate.isBefore(twoMonthAgo) && !rowDate.isAfter(today)) {
                                     int closePrice = Integer.parseInt(priceStr);
 
                                     boolean exists = stockRecordRepository.existsByStockCodeAndDate(code, rowDate);
