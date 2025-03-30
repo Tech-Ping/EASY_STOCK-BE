@@ -35,7 +35,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setCharacterEncoding(ENCODING_TYPE);
         response.setStatus(httpStatus.value());
 
-        ErrorResponse errorResponse = ErrorResponse.from(errorStatus);
+
+        AuthErrorResponse errorResponse = AuthErrorResponse.from(errorStatus);
         PrintWriter writer = response.getWriter();
         writer.write(objectMapper.writeValueAsString(errorResponse));
     }
