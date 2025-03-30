@@ -56,6 +56,9 @@ public class Member extends AuditingEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberQuiz> memberQuizzes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Inventory> inventories = new ArrayList<>();
+
     public void updateTokenBudget(Integer token){
         this.tokenBudget += token;
     }

@@ -6,7 +6,7 @@ import com.google.firebase.messaging.WebpushNotification;
 
 import java.time.LocalDateTime;
 
-public class FCMAlarmUtil {
+public class FcmAlarmUtils {
     public static WebpushConfig buildWebpushConfig(String title, String body, LocalDateTime sendTimeStamp){
         return WebpushConfig.builder()
                 .setNotification(

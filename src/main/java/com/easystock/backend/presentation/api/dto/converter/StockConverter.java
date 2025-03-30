@@ -2,16 +2,17 @@ package com.easystock.backend.presentation.api.dto.converter;
 
 import com.easystock.backend.infrastructure.database.entity.Stock;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
-import com.easystock.backend.infrastructure.kis.response.KisStockPricesOutputResponse;
-import com.easystock.backend.infrastructure.kis.response.KisStockQuotesOutput1Response;
-import com.easystock.backend.infrastructure.kis.response.KisStockQuotesOutput2Response;
+import com.easystock.backend.infrastructure.finance.kis.response.KisStockPricesOutputResponse;
+import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput1Response;
+import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput2Response;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StockConverter {
-    public static StockPricesResponse toStockPricesResponse(Stock stock, KisStockPricesOutputResponse stockOutput){
+    public static StockPricesResponse toStockPricesResponse(
+            Stock stock, KisStockPricesOutputResponse stockOutput){
         return StockPricesResponse.builder()
                 .id(stock.getId())
                 .stockCode(stock.getCode())
@@ -27,7 +28,8 @@ public class StockConverter {
                 .build();
     }
 
-    public static StockQuotesResponse toStockQuotesResponse(Stock stock, TradeType type, KisStockQuotesOutput1Response stockOutput1, KisStockQuotesOutput2Response stockOutput2) {
+    public static StockQuotesResponse toStockQuotesResponse(
+            Stock stock, TradeType type, KisStockQuotesOutput1Response stockOutput1, KisStockQuotesOutput2Response stockOutput2) {
         // SELL인 경우 매도 관련 호가와 잔량을 사용하고, BUY인 경우 매수 관련 호가와 잔량을 사용
         if (type == TradeType.SELL) {
             return StockQuotesResponse.builder()

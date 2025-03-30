@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class TutorialConverter {
     public static CompleteTutorialResponse toCompleteTutorialResDto(LevelType nextLevel){
         return CompleteTutorialResponse.builder()
-                .message("성공적으로 튜토리얼을 마쳤습니다. 1000 STOKEN을 보상으로 드려요!")
+                .message("성공적으로 튜토리얼을 마쳤습니다. 100만 STOKEN을 보상으로 드려요!")
                 .build();
     }
 }

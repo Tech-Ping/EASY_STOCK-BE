@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -32,4 +33,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query("UPDATE Member m SET m.tokenBudget = m.tokenBudget + :rewardTokens WHERE m.id = :memberId")
     void addRewardTokens(@Param("memberId") Long memberId, @Param("rewardTokens") int rewardTokens);
+
+    @Query("SELECT DISTINCT m FROM Member m LEFT JOIN FETCH m.inventories i LEFT JOIN FETCH i.stock")
+    List<Member> findAllWithInventoriesAndStocks();
 }

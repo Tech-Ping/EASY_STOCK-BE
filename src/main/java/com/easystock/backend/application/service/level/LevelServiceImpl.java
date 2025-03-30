@@ -33,7 +33,7 @@ public class LevelServiceImpl implements LevelService {
         if(nextLevel == null)
             throw new LevelException(ErrorStatus.LEVELUP_CONDITION_UNSATISFIED);
         memberRepository.improveLevel(memberId, nextLevel);
-        memberRepository.addRewardTokens(memberId, 3000);
+        memberRepository.addRewardTokens(memberId, 300000);
         return MemberConverter.toLevelUpResDto(nextLevel);
     }
 

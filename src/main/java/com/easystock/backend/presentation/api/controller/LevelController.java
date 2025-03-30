@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/level")
 @Tag(name = "레벨 API - /api/level ")
 public class LevelController {
+
     private final LevelService levelService;
+
     @PostMapping("/up")
     @Operation(
             summary = "회원 레벨업 API - 회원이 레벨업을 요청합니다.",
