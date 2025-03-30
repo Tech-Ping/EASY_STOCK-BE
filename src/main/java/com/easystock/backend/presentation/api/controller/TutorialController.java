@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping(value = "/api/tutorials")
 @Tag(name = "튜토리얼 API - /api/tutorials")
 public class TutorialController {
+
     private final TutorialService tutorialService;
 
     @PostMapping("/complete")

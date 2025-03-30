@@ -50,7 +50,10 @@ public enum ErrorStatus implements BaseErrorCode {
     TRADE_CANNOT_BE_CANCELLED(HttpStatus.BAD_REQUEST, "TRADE002", "이미 처리된 주문을 취소할 수 없습니다."),
     TRADE_NOT_OWNED_BY_USER(HttpStatus.BAD_REQUEST, "TRADE003", "해당 유저의 주문이 아닙니다."),
     INSUFFICIENT_FUNDS(HttpStatus.BAD_REQUEST, "TRADE004", "유저의 잔액이 부족합니다."),
-    INSUFFICIENT_STOCKS(HttpStatus.BAD_REQUEST, "TRADE005", "유저의 주식이 부족합니다.");
+    INSUFFICIENT_STOCKS(HttpStatus.BAD_REQUEST, "TRADE005", "유저의 주식이 부족합니다."),
+
+    /* MONTHLY REPORT exception */
+    MONTHLY_REPORT_NOT_FOUND(HttpStatus.BAD_REQUEST, "REPORT001", "해당하는 매월 투자 리포트 정보가 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

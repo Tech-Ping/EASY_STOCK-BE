@@ -2,13 +2,12 @@ package com.easystock.backend.infrastructure.database.entity;
 
 import com.easystock.backend.infrastructure.database.entity.enums.InvestmentType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor @RequiredArgsConstructor
 @Table(name = "monthly_report")
 public class MonthlyReport {
 
@@ -27,4 +26,12 @@ public class MonthlyReport {
 
     @Enumerated(EnumType.STRING)
     private InvestmentType investmentType;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String topStocksJson;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String profitGraphJson;
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "테스트용 API - /api/test ")
 @RequestMapping("/api/test/")
 public class InitController {
+
     private final TokenService tokenService;
     private final StockInfoInitializeService stockInitService;
 
