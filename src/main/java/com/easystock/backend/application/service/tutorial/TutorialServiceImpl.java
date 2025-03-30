@@ -23,7 +23,7 @@ public class TutorialServiceImpl implements TutorialService {
                 .orElseThrow(() -> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
         LevelType currentLevel = currentMember.getLevel();
         LevelType nextLevel = calculateNextLevel(currentLevel);
-        memberRepository.completeTutorialAndRewardTokens(memberId, 1000);
+        memberRepository.completeTutorialAndRewardTokens(memberId, 1000000);
         return TutorialConverter.toCompleteTutorialResDto(nextLevel);
     }
 

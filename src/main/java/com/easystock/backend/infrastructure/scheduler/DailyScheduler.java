@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,7 @@ public class DailyScheduler {
     private final NaverFinanceCrawler naverFinanceCrawler;
     private static final Logger log = LoggerFactory.getLogger(DailyScheduler.class);
 
+    @Transactional
     @Scheduled(cron = "0 0 0 * * *")
     public void saveDailyStockPrices() {
         List<String> stockCodes = Constants.STOCK_CODES;

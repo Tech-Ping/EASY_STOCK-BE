@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StockConverter {
-    public static StockPricesResponse toStockPricesResponse(Stock stock, KisStockPricesOutputResponse stockOutput){
+    public static StockPricesResponse toStockPricesResponse(
+            Stock stock, KisStockPricesOutputResponse stockOutput){
         return StockPricesResponse.builder()
                 .id(stock.getId())
                 .stockCode(stock.getCode())
@@ -27,7 +28,8 @@ public class StockConverter {
                 .build();
     }
 
-    public static StockQuotesResponse toStockQuotesResponse(Stock stock, TradeType type, KisStockQuotesOutput1Response stockOutput1, KisStockQuotesOutput2Response stockOutput2) {
+    public static StockQuotesResponse toStockQuotesResponse(
+            Stock stock, TradeType type, KisStockQuotesOutput1Response stockOutput1, KisStockQuotesOutput2Response stockOutput2) {
         // SELL인 경우 매도 관련 호가와 잔량을 사용하고, BUY인 경우 매수 관련 호가와 잔량을 사용
         if (type == TradeType.SELL) {
             return StockQuotesResponse.builder()

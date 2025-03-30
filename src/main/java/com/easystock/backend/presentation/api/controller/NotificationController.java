@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/notifications")
 @Tag(name = "알림 API - /api/notifications ")
 public class NotificationController {
+
     private final NotificationService notificationService;
 
     @PostMapping("/test")
