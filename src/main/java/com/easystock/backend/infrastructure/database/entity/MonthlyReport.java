@@ -29,9 +29,5 @@ public class MonthlyReport {
 
     @Lob
     @Column(columnDefinition = "TEXT")
-    private String topStocksJson;
-
-    @Lob
-    @Column(columnDefinition = "TEXT")
     private String profitGraphJson;
 }

@@ -7,11 +7,9 @@ import com.easystock.backend.infrastructure.database.entity.enums.InvestmentType
 import com.easystock.backend.infrastructure.database.repository.MemberRepository;
 import com.easystock.backend.infrastructure.database.repository.MonthlyReportRepository;
 import com.easystock.backend.infrastructure.scheduler.collector.MonthlyGraphDataCollector;
-import com.easystock.backend.infrastructure.scheduler.collector.MonthlyTopStockCollector;
+import com.easystock.backend.presentation.api.dto.converter.MonthlyReportConverter;
 import com.easystock.backend.presentation.api.dto.response.DailyProfit;
-import com.easystock.backend.presentation.api.dto.response.MonthlyStockInfoResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +28,6 @@ public class MonthlyScheduler {
     private final MemberRepository memberRepository;
     private final MonthlyReportRepository monthlyReportRepository;
     private final InvestmentTypeAnalyzer investmentTypeAnalyzer;
-    private final MonthlyTopStockCollector monthlyTopStockCollector;
     private final MonthlyGraphDataCollector monthlyGraphDataCollector;
     private final ObjectMapper objectMapper;
     private static final Logger log = LoggerFactory.getLogger(MonthlyScheduler.class);
@@ -53,20 +50,13 @@ public class MonthlyScheduler {
 
             try {
                 InvestmentType investmentType = investmentTypeAnalyzer.analyze(member.getId());
-                List<MonthlyStockInfoResponse> topStocks = monthlyTopStockCollector.selectTopStock(member);
                 List<DailyProfit> profitGraph = monthlyGraphDataCollector.generateDailyProfitGraph(member, start, end);
 
-                String topStocksJson = objectMapper.writeValueAsString(topStocks);
                 String profitGraphJson = objectMapper.writeValueAsString(profitGraph);
 
-                MonthlyReport report = MonthlyReport.builder()
-                        .member(member)
-                        .year(lastMonth.getYear())
-                        .month(lastMonth.getMonthValue())
-                        .investmentType(investmentType)
-                        .topStocksJson(topStocksJson)
-                        .profitGraphJson(profitGraphJson)
-                        .build();
+                MonthlyReport report = MonthlyReportConverter.toMonthlyReport(
+                        member, lastMonth.getYear(), lastMonth.getMonthValue(), investmentType, profitGraphJson
+                );
 
                 monthlyReportRepository.save(report);
                 log.info("[월간 리포트 생성 완료] {} / {} - {}", member.getId(), lastMonth, investmentType);

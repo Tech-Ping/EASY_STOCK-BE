@@ -21,9 +21,10 @@ public class DailyProfit {
                 .date(DateUtils.formatDateWithDot(date))
                 .totalTradeAmount(totalInvestment)
                 .realProfit(realProfit)
-                .realProfitRate(FormatUtils.formatRatePercentage(
-                        FormatUtils.calculateChangeRate(totalEvaluated, totalInvested)
-                ))
+                .realProfitRate(
+                        totalInvested == 0 ? "0.0%" :
+                                FormatUtils.formatRatePercentage(FormatUtils.calculateChangeRate(totalEvaluated, totalInvested))
+                )
                 .build();
     }
 

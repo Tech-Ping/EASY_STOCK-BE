@@ -24,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.easystock.backend.util.FormatUtils.calculateChangeRate;
 
@@ -53,28 +55,34 @@ public class MyPageServiceImpl implements MyPageService {
         YearMonth targetMonth = yearMonth.minusMonths(1);
         int year = targetMonth.getYear();
         int month = targetMonth.getMonthValue();
+        log.info("[월간리포트] 조회 요청 - memberId: {}, targetMonth: {}", memberId, targetMonth);
+
 
         return monthlyReportRepository.findByMemberIdAndYearAndMonth(memberId, year, month)
                 .map(report -> {
                     try {
-                        List<MonthlyStockInfoResponse> topStocks = objectMapper.readValue(
-                                report.getTopStocksJson(),
-                                objectMapper.getTypeFactory().constructCollectionType(List.class, MonthlyStockInfoResponse.class)
-                        );
+                        List<MonthlyStockInfoResponse> topStocks = getMyCurrentStockStatus(memberId)
+                                .stream()
+                                .toList();
+                        log.info("[월간리포트] TopStocks 개수: {}", topStocks.size());
+
+
+                        String profitGraphJson = report.getProfitGraphJson();
 
                         List<DailyProfit> profitGraph = objectMapper.readValue(
-                                report.getProfitGraphJson(),
+                                profitGraphJson,
                                 objectMapper.getTypeFactory().constructCollectionType(List.class, DailyProfit.class)
                         );
 
-                        return MonthlyReportResponse.builder()
-                                .reportDate(DateUtils.formatYearMonth(targetMonth))
-                                .investmentType(InvestmentTypeInfo.from(report.getInvestmentType()))
-                                .topStocks(topStocks)
-                                .profitGraph(profitGraph)
-                                .build();
+                        MonthlyReportResponse response = MonthlyReportConverter.toMonthlyReportResponse(
+                                targetMonth, report.getInvestmentType(), topStocks, profitGraph
+                        );
+                        log.info("[월간리포트] 응답 생성 완료");
+
+                        return response;
 
                     } catch (Exception e) {
+                        log.error("[월간리포트] 처리 중 예외 발생", e);
                         throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
                     }
                 })
@@ -83,34 +91,58 @@ public class MyPageServiceImpl implements MyPageService {
 
 
     @Override
-    public List<MonthlyStockInfoResponse> getMyCurrentStockStatus(Long memberId){
+    public List<MonthlyStockInfoResponse> getMyCurrentStockStatus(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new AuthException(ErrorStatus.MEMBER_NOT_FOUND));
 
         List<Inventory> myStocks = inventoryRepository.findAllByMember(member);
 
-        return myStocks.stream()
-                .map(inventory -> {
-                    Long stockId = inventory.getStock().getId();
-                    String stockCode = inventory.getStock().getCode();
+        // 종목(tickers)별 누적 맵
+        Map<String, InventoryAggregation> aggregationMap = new HashMap<>();
 
-                    StockPricesResponse currentPriceInfo = stockService.getStockPrice(stockId);
+        for (Inventory inventory : myStocks) {
+            String stockCode = inventory.getStock().getCode();
+            int quantity = inventory.getQuantity();
+            int totalPrice = inventory.getTotalPrice();
+            Long stockId = inventory.getStock().getId();
+
+            aggregationMap.compute(stockCode, (code, prev) -> {
+                if (prev == null) {
+                    return new InventoryAggregation(quantity, totalPrice, stockId);
+                } else {
+                    prev.quantity += quantity;
+                    prev.totalPrice += totalPrice;
+                    return prev;
+                }
+            });
+        }
+
+        return aggregationMap.entrySet().stream()
+                .map(entry -> {
+                    String stockCode = entry.getKey();
+                    InventoryAggregation agg = entry.getValue();
+
+                    StockPricesResponse currentPriceInfo = stockService.getStockPrice(agg.stockId);
                     int currentPrice = Math.toIntExact(currentPriceInfo.getStckPrpr());
                     String stockName = currentPriceInfo.getStockName();
 
                     int lastMonthPrice = stockRecordRepository
-                            .findTopByStockCodeAndDateBeforeOrderByDateDesc(
+                            .findFirstByStockCodeAndDateLessThanEqualOrderByDateDesc(
                                     stockCode,
                                     DateUtils.getValidOneMonthAgo()
                             )
                             .map(StockRecord::getClosePrice)
                             .orElse(0);
 
-                    Double lastMonthChangeRate = calculateChangeRate(currentPrice, lastMonthPrice);
-                    return StockRecordConverter.toMonthlyStockInfoResponse(stockCode, stockName, currentPrice, lastMonthChangeRate);
+                    Double changeRate = calculateChangeRate(currentPrice, lastMonthPrice);
+
+                    return StockRecordConverter.toMonthlyStockInfoResponse(
+                            stockCode, stockName, currentPrice, changeRate
+                    );
                 })
                 .toList();
     }
+
 
     @Override
     public List<MonthlyStockInfoResponse> getMyBookmarkTickersCurrentStatus(Long memberId){
@@ -128,7 +160,7 @@ public class MyPageServiceImpl implements MyPageService {
                     String stockName = currentPriceInfo.getStockName();
 
                     int lastMonthPrice = stockRecordRepository
-                            .findTopByStockCodeAndDateBeforeOrderByDateDesc(stockCode, DateUtils.getValidOneMonthAgo())
+                            .findFirstByStockCodeAndDateLessThanEqualOrderByDateDesc(stockCode, DateUtils.getValidOneMonthAgo())
                             .map(StockRecord::getClosePrice)
                             .orElse(0);
 

@@ -11,10 +11,6 @@ import java.util.Optional;
 public interface StockRecordRepository extends JpaRepository<StockRecord, Long> {
     boolean existsByStockCodeAndDate(String stockCode, LocalDate date);
 
-    @Query("SELECT sr FROM StockRecord sr WHERE sr.stockCode = :stockCode AND sr.date <= :date ORDER BY sr.date DESC")
-    Optional<StockRecord> findTopByStockCodeAndDateBeforeOrderByDateDesc(
-            @Param("stockCode") String stockCode,
-            @Param("date") LocalDate date
-    );
+    Optional<StockRecord> findFirstByStockCodeAndDateLessThanEqualOrderByDateDesc(String stockCode, LocalDate date);
 
 }

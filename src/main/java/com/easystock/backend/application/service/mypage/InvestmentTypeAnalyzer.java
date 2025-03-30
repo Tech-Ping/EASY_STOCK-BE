@@ -42,13 +42,14 @@ public class InvestmentTypeAnalyzer {
             int quantity = inventory.getQuantity();
 
             // 전날 종가 기준 현재 평가금액
-            int yesterdayPrice = stockRecordRepository.findTopByStockCodeAndDateBeforeOrderByDateDesc(stockCode, LocalDate.now())
+            int yesterdayPrice = stockRecordRepository
+                    .findFirstByStockCodeAndDateLessThanEqualOrderByDateDesc(stockCode, LocalDate.now())
                     .map(StockRecord::getClosePrice)
                     .orElse(0);
 
             // 한달 전 종가 기준 평가금액
             int oneMonthAgoPrice = stockRecordRepository
-                    .findTopByStockCodeAndDateBeforeOrderByDateDesc(stockCode, DateUtils.getValidOneMonthAgo())
+                    .findFirstByStockCodeAndDateLessThanEqualOrderByDateDesc(stockCode, DateUtils.getValidOneMonthAgo())
                     .map(StockRecord::getClosePrice)
                     .orElse(0);
 
