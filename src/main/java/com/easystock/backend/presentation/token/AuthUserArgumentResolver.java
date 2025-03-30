@@ -1,10 +1,9 @@
 package com.easystock.backend.presentation.token;
 
-import com.easystock.backend.aspect.exception.AuthException;
+import com.easystock.backend.aspect.exception.UnauthorizedTokenException;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -31,6 +30,6 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             Object principal = auth.getPrincipal();
             return principal;
         }
-        throw new IllegalArgumentException("Invalid principal type or authentication type");
+        throw new UnauthorizedTokenException(ErrorStatus._UNAUTHORIZED);
     }
 }
