@@ -1,5 +1,6 @@
 package com.easystock.backend.presentation.token;
 
+import com.easystock.backend.presentation.api.payload.ApiResponse;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setCharacterEncoding(ENCODING_TYPE);
         response.setStatus(httpStatus.value());
 
-        AuthErrorResponse errorResponse = AuthErrorResponse.from(errorStatus);
+        ApiResponse<Object> errorResponse = ApiResponse.onFailure(
+                errorStatus.getCode(),
+                errorStatus.getMessage(),
+                null
+        );
         PrintWriter writer = response.getWriter();
         writer.write(objectMapper.writeValueAsString(errorResponse));
     }
