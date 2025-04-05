@@ -37,10 +37,8 @@ public class KisStockConverter {
                                                       String stockUrl,
                                                       String stockTrId,
                                                       Class<T> responseType) {
-        String url = UriComponentsBuilder.fromHttpUrl(stockUrl)
-                .queryParam("FID_COND_MRKT_DIV_CODE", "J")
-                .queryParam("FID_INPUT_ISCD", stockCode)
-                .toUriString();
+
+        String url = buildStockUrl(stockUrl, stockCode);
 
         HttpEntity<Void> entity = getVoidHttpEntity(accessToken, appKey, appSecret, stockTrId);
 
@@ -50,6 +48,13 @@ public class KisStockConverter {
                 entity,
                 responseType
         );
+    }
+
+    private String buildStockUrl(String stockUrl, String stockCode) {
+        return UriComponentsBuilder.fromUriString(stockUrl)
+                .queryParam("FID_COND_MRKT_DIV_CODE", "J")
+                .queryParam("FID_INPUT_ISCD", stockCode)
+                .toUriString();
     }
 
     /**
