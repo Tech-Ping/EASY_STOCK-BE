@@ -13,9 +13,6 @@ import lombok.ToString;
 @Schema(description = "투자자별 주식 순매수 정보 Response")
 public class StockAmountResponse {
 
-    @Schema(description = "종목 이름", example = "삼성전자")
-    private String stockName;
-
     @Schema(description = "주식 영업 일자", example = "20250405")
     private String date;
 
