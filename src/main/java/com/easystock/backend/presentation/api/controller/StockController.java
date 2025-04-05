@@ -2,7 +2,7 @@ package com.easystock.backend.presentation.api.controller;
 
 import com.easystock.backend.application.service.stock.StockService;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
-import com.easystock.backend.presentation.api.dto.response.GetMemberProfileResponse;
+import com.easystock.backend.presentation.api.dto.response.StockAmountResponse;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import com.easystock.backend.presentation.api.payload.ApiResponse;
@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,5 +60,18 @@ public class StockController {
             @RequestParam(required = false) TradeType type
     ) {
         return ApiResponse.onSuccess(stockService.getStockQuotes(stockId, type));
+    }
+
+
+    @GetMapping("/{stockId}/amounts")
+    @Operation(
+            summary = "투자자별 순매수 거래 대금 조회 API - 특정 주식의 8일간의 투자자별(외국인, 개인, 기관) 순매수 거래 대금 정보를 반환합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    public ApiResponse<List<StockAmountResponse>> getStockAmounts(
+            @Parameter(description = "주식 ID", required = true)
+            @PathVariable Long stockId
+    ) {
+        return ApiResponse.onSuccess(stockService.getStockAmounts(stockId));
     }
 }

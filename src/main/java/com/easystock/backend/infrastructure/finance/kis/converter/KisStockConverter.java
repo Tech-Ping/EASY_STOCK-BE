@@ -37,8 +37,10 @@ public class KisStockConverter {
                                                       String stockUrl,
                                                       String stockTrId,
                                                       Class<T> responseType) {
-
-        String url = buildStockUrl(stockUrl, stockCode);
+        String url = UriComponentsBuilder.fromHttpUrl(stockUrl)
+                .queryParam("FID_COND_MRKT_DIV_CODE", "J")
+                .queryParam("FID_INPUT_ISCD", stockCode)
+                .toUriString();
 
         HttpEntity<Void> entity = getVoidHttpEntity(accessToken, appKey, appSecret, stockTrId);
 
@@ -50,11 +52,29 @@ public class KisStockConverter {
         );
     }
 
-    private String buildStockUrl(String stockUrl, String stockCode) {
-        return UriComponentsBuilder.fromUriString(stockUrl)
-                .queryParam("FID_COND_MRKT_DIV_CODE", "J")
+    public <T> ResponseEntity<T> exchangeRestTemplate2(String accessToken,
+                                                      String appKey,
+                                                      String appSecret,
+                                                      String stockCode,
+                                                      String stockUrl,
+                                                      String stockTrId,
+                                                      String date,
+                                                      Class<T> responseType) {
+        String url = UriComponentsBuilder.fromHttpUrl(stockUrl)
+                .queryParam("FID_COND_MRKT_DIV_CODE", "U")
                 .queryParam("FID_INPUT_ISCD", stockCode)
+                .queryParam("FID_INPUT_DATE_1", date)
+                .queryParam("FID_INPUT_ISCD_1", "KSP")
                 .toUriString();
+
+        HttpEntity<Void> entity = getVoidHttpEntity(accessToken, appKey, appSecret, stockTrId);
+
+        return restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                responseType
+        );
     }
 
     /**

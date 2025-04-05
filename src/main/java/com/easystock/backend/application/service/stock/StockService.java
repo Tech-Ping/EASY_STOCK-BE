@@ -9,6 +9,7 @@ import com.easystock.backend.infrastructure.finance.kis.converter.KisStockConver
 import com.easystock.backend.infrastructure.finance.kis.response.*;
 import com.easystock.backend.infrastructure.finance.kis.token.KISTokenService;
 import com.easystock.backend.presentation.api.dto.converter.StockConverter;
+import com.easystock.backend.presentation.api.dto.response.StockAmountResponse;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
@@ -19,6 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +48,12 @@ public class StockService {
 
     @Value("${KIS_TRADE_QUOTE_TR_ID:}")
     private String KIS_TRADE_QUOTE_TR_ID;
+
+    @Value("${KIS_TRADE_AMOUNT_URL:}")
+    private String KIS_TRADE_AMOUNT_URL;
+
+    @Value("${KIS_TRADE_AMOUNT_TR_ID:}")
+    private String KIS_TRADE_AMOUNT_TR_ID;
 
     private final KisStockConverter kisStockConverter;
     private final KISTokenService kisTokenService;
@@ -174,5 +184,59 @@ public class StockService {
                 .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
 
         return getStockQuotesFromApi(stock, type);
+    }
+
+
+    /**
+     * 특정 주식의 8일간의 투자자별 순매수 거래 대금 정보를 가져오는 메소드
+     */
+    public List<StockAmountResponse> getStockAmounts(Long stockId) {
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
+
+        List<StockAmountResponse> result = new ArrayList<>();
+        LocalDate date = LocalDate.now().minusDays(1); // 어제부터 시작
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        while (result.size() < 8) {
+            String formattedDate = date.format(formatter);
+            StockAmountResponse response = getStockAmountFromApi(stock, formattedDate);
+
+            if (response != null) {
+                result.add(response);
+            }
+
+            date = date.minusDays(1); // 하루 전으로 이동
+        }
+
+        return result;
+    }
+
+    private StockAmountResponse getStockAmountFromApi(Stock stock, String date) {
+        try {
+            ResponseEntity<KisStockAmountsResponse> kisResponse = kisStockConverter.exchangeRestTemplate2(
+                    "Bearer " + kisTokenService.getAccessToken(),
+                    APP_KEY,
+                    APP_SECRET,
+                    stock.getCode(),
+                    KIS_TRADE_AMOUNT_URL,
+                    KIS_TRADE_AMOUNT_TR_ID,
+                    date,
+                    KisStockAmountsResponse.class
+            );
+
+            KisStockAmountsResponse stockApiResponse = kisResponse.getBody();
+
+            if (stockApiResponse != null) {
+                KisStockAmountsOutputResponse stockOutput = stockApiResponse.getOutput();
+                if (stockOutput != null) {
+                    return StockConverter.toStockAmountReponse(stock, stockOutput);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

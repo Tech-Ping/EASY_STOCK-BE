@@ -2,9 +2,11 @@ package com.easystock.backend.presentation.api.dto.converter;
 
 import com.easystock.backend.infrastructure.database.entity.Stock;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
+import com.easystock.backend.infrastructure.finance.kis.response.KisStockAmountsOutputResponse;
 import com.easystock.backend.infrastructure.finance.kis.response.KisStockPricesOutputResponse;
 import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput1Response;
 import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput2Response;
+import com.easystock.backend.presentation.api.dto.response.StockAmountResponse;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,17 @@ public class StockConverter {
                 .prdyCtrt(Double.parseDouble(stockOutput.getPrdyCtrt()))
                 .acmlTrPbmn(Long.parseLong(stockOutput.getAcmlTrPbmn()))
                 .acmlVol(Long.parseLong(stockOutput.getAcmlVol()))
+                .build();
+    }
+
+    public static StockAmountResponse toStockAmountReponse(
+            Stock stock, KisStockAmountsOutputResponse stockOutput){
+        return StockAmountResponse.builder()
+                .stockName(stock.getName())
+                .date(stockOutput.getStck_bsop_date())
+                .foreignAmounts(stockOutput.getFrgn_ntby_tr_pbmn())
+                .personAmounts(stockOutput.getPrsn_ntby_tr_pbmn())
+                .organizationAmounts(stockOutput.getOrgn_ntby_tr_pbmn())
                 .build();
     }
 
