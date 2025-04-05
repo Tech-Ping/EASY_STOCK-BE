@@ -7,6 +7,7 @@ import com.easystock.backend.infrastructure.finance.kis.response.KisStockPricesO
 import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput1Response;
 import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput2Response;
 import com.easystock.backend.presentation.api.dto.response.StockAmountResponse;
+import com.easystock.backend.presentation.api.dto.response.StockInfoResponse;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import org.springframework.stereotype.Component;
@@ -97,5 +98,17 @@ public class StockConverter {
         }
 
         return null;
+    }
+
+    public static StockInfoResponse toStockInfoResponse(Stock stock, KisStockPricesOutputResponse stockOutput) {
+        return StockInfoResponse.builder()
+                .stockName(stock.getName())
+                .marketType(String.valueOf(stock.getType()))
+                .sectorName(stockOutput.getBstpKorIsnm())
+                .marketCap(stockOutput.getHtsAvls())
+                .listedShares(stockOutput.getLstnStcn())
+                .capital(stockOutput.getCpfn())
+                .parValue(stockOutput.getStckFcam())
+                .build();
     }
 }

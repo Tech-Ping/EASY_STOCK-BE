@@ -10,6 +10,7 @@ import com.easystock.backend.infrastructure.finance.kis.response.*;
 import com.easystock.backend.infrastructure.finance.kis.token.KISTokenService;
 import com.easystock.backend.presentation.api.dto.converter.StockConverter;
 import com.easystock.backend.presentation.api.dto.response.StockAmountResponse;
+import com.easystock.backend.presentation.api.dto.response.StockInfoResponse;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
@@ -223,4 +224,38 @@ public class StockService {
 
         return Collections.emptyList();
     }
+
+    public StockInfoResponse getStockInfo(Long stockId) {
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
+
+        try {
+            ResponseEntity<KisStockPricesResponse> kisResponse = kisStockConverter.exchangeRestTemplate(
+                    "Bearer " + kisTokenService.getAccessToken(),
+                    APP_KEY,
+                    APP_SECRET,
+                    stock.getCode(),
+                    KIS_STOCK_PRICE_URL,
+                    KIS_STOCK_PRICE_TR_ID,
+                    KisStockPricesResponse.class
+            );
+
+            KisStockPricesResponse stockApiResponse = kisResponse.getBody();
+
+            if (stockApiResponse != null) {
+                KisStockPricesOutputResponse stockOutput = stockApiResponse.getOutput();
+                if (stockOutput != null) {
+                    StockInfoResponse stockInfo = StockConverter.toStockInfoResponse(stock, stockOutput);
+
+                    return stockInfo;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null; // 실패 시 null 반환
+    }
+
+
 }
