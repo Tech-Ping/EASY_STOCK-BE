@@ -2,10 +2,7 @@ package com.easystock.backend.presentation.api.controller;
 
 import com.easystock.backend.application.service.stock.StockService;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
-import com.easystock.backend.presentation.api.dto.response.StockAmountResponse;
-import com.easystock.backend.presentation.api.dto.response.StockInfoResponse;
-import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
-import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
+import com.easystock.backend.presentation.api.dto.response.*;
 import com.easystock.backend.presentation.api.payload.ApiResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -86,5 +83,17 @@ public class StockController {
             @PathVariable Long stockId
     ) {
         return ApiResponse.onSuccess(stockService.getStockInfo(stockId));
+    }
+
+    @GetMapping("/{stockId}/financials")
+    @Operation(
+            summary = "주식별 재무 정보 조회 API - 특정 주식의 재무 정보를 반환합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    public ApiResponse<List<StockFinancialResponse>> getFinancials(
+            @Parameter(description = "주식 ID", required = true)
+            @PathVariable Long stockId
+    ) {
+        return ApiResponse.onSuccess(stockService.getFinancials(stockId));
     }
 }
