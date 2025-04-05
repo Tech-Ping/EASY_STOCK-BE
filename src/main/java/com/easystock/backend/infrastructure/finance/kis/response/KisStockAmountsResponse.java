@@ -4,12 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
+@ToString
 public class KisStockAmountsResponse {
      @JsonProperty("output")
-     private final KisStockAmountsOutputResponse output;
+     private final List<KisStockAmountsOutputResponse> output;
 
      @JsonProperty("rt_cd")
      private final String rtCd;

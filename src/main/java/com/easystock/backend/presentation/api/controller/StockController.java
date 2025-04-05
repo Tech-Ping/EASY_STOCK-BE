@@ -72,6 +72,6 @@ public class StockController {
             @Parameter(description = "주식 ID", required = true)
             @PathVariable Long stockId
     ) {
-        return ApiResponse.onSuccess(stockService.getStockAmounts(stockId));
+        return ApiResponse.onSuccess(stockService.getStockAmountFromApi(stockId));
     }
 }

@@ -30,10 +30,8 @@ public class StockConverter {
                 .build();
     }
 
-    public static StockAmountResponse toStockAmountReponse(
-            Stock stock, KisStockAmountsOutputResponse stockOutput){
+    public static StockAmountResponse toStockAmountReponse(KisStockAmountsOutputResponse stockOutput){
         return StockAmountResponse.builder()
-                .stockName(stock.getName())
                 .date(stockOutput.getStck_bsop_date())
                 .foreignAmounts(stockOutput.getFrgn_ntby_tr_pbmn())
                 .personAmounts(stockOutput.getPrsn_ntby_tr_pbmn())

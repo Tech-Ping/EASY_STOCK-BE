@@ -13,6 +13,7 @@ import com.easystock.backend.presentation.api.dto.response.StockAmountResponse;
 import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
 import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -190,53 +192,35 @@ public class StockService {
     /**
      * 특정 주식의 8일간의 투자자별 순매수 거래 대금 정보를 가져오는 메소드
      */
-    public List<StockAmountResponse> getStockAmounts(Long stockId) {
+    public List<StockAmountResponse> getStockAmountFromApi(Long stockId) {
         Stock stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
-
-        List<StockAmountResponse> result = new ArrayList<>();
-        LocalDate date = LocalDate.now().minusDays(1); // 어제부터 시작
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
-        while (result.size() < 8) {
-            String formattedDate = date.format(formatter);
-            StockAmountResponse response = getStockAmountFromApi(stock, formattedDate);
-
-            if (response != null) {
-                result.add(response);
-            }
-
-            date = date.minusDays(1); // 하루 전으로 이동
-        }
-
-        return result;
-    }
-
-    private StockAmountResponse getStockAmountFromApi(Stock stock, String date) {
         try {
-            ResponseEntity<KisStockAmountsResponse> kisResponse = kisStockConverter.exchangeRestTemplate2(
+            ResponseEntity<KisStockAmountsResponse> kisResponse = kisStockConverter.exchangeRestTemplate(
                     "Bearer " + kisTokenService.getAccessToken(),
                     APP_KEY,
                     APP_SECRET,
                     stock.getCode(),
                     KIS_TRADE_AMOUNT_URL,
                     KIS_TRADE_AMOUNT_TR_ID,
-                    date,
                     KisStockAmountsResponse.class
             );
 
             KisStockAmountsResponse stockApiResponse = kisResponse.getBody();
 
             if (stockApiResponse != null) {
-                KisStockAmountsOutputResponse stockOutput = stockApiResponse.getOutput();
-                if (stockOutput != null) {
-                    return StockConverter.toStockAmountReponse(stock, stockOutput);
+                List<KisStockAmountsOutputResponse> stockOutputs = stockApiResponse.getOutput();
+                if (stockOutputs != null) {
+                    return stockOutputs.stream()
+                            .limit(8)
+                            .map(stockOutput -> StockConverter.toStockAmountReponse(stockOutput))
+                            .collect(Collectors.toList());
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return null;
+        return Collections.emptyList();
     }
 }
