@@ -55,7 +55,6 @@ public class MyPageServiceImpl implements MyPageService {
         YearMonth targetMonth = yearMonth.minusMonths(1);
         int year = targetMonth.getYear();
         int month = targetMonth.getMonthValue();
-        log.info("[월간리포트] 조회 요청 - memberId: {}, targetMonth: {}", memberId, targetMonth);
 
 
         return monthlyReportRepository.findByMemberIdAndYearAndMonth(memberId, year, month)
@@ -64,7 +63,6 @@ public class MyPageServiceImpl implements MyPageService {
                         List<MonthlyStockInfoResponse> topStocks = getMyCurrentStockStatus(memberId)
                                 .stream()
                                 .toList();
-                        log.info("[월간리포트] TopStocks 개수: {}", topStocks.size());
 
 
                         String profitGraphJson = report.getProfitGraphJson();
@@ -77,12 +75,10 @@ public class MyPageServiceImpl implements MyPageService {
                         MonthlyReportResponse response = MonthlyReportConverter.toMonthlyReportResponse(
                                 targetMonth, report.getInvestmentType(), topStocks, profitGraph
                         );
-                        log.info("[월간리포트] 응답 생성 완료");
 
                         return response;
 
                     } catch (Exception e) {
-                        log.error("[월간리포트] 처리 중 예외 발생", e);
                         throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
                     }
                 })

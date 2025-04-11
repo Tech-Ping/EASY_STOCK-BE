@@ -52,6 +52,29 @@ public class KisStockConverter {
         );
     }
 
+    public <T> ResponseEntity<T> exchangeRestTemplate2(String accessToken,
+                                                      String appKey,
+                                                      String appSecret,
+                                                      String stockCode,
+                                                      String stockUrl,
+                                                      String stockTrId,
+                                                      Class<T> responseType) {
+        String url = UriComponentsBuilder.fromHttpUrl(stockUrl)
+                .queryParam("FID_DIV_CLS_CODE", "1")
+                .queryParam("fid_cond_mrkt_div_code", "J")
+                .queryParam("fid_input_iscd", stockCode)
+                .toUriString();
+
+        HttpEntity<Void> entity = getVoidHttpEntity(accessToken, appKey, appSecret, stockTrId);
+
+        return restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                responseType
+        );
+    }
+
     /**
      * 한국투자증권 주식현재가 시세 요청 헤더
      * @param accessToken
@@ -68,6 +91,7 @@ public class KisStockConverter {
         headers.set("appkey", appKey);
         headers.set("appsecret", appSecret);
         headers.set("tr_id", stockTrId);
+        headers.set("tr_cont", "N");
         headers.set("Accept", "application/json; charset=utf-8");
         headers.set("Content-Type", "application/json; charset=utf-8");
 
