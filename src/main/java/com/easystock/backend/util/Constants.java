@@ -9,5 +9,9 @@ public abstract class Constants {
     public static final String ENCODING_TYPE = "utf-8";
     public static final String MEMBER_ID_KEY_NAME = "memberId";
     public static final String TOKEN_TYPE_KEY_NAME = "tokenType";
-    public static final List<String> STOCK_CODES = List.of("005930", "373220", "005380", "000660", "083650");
+    public static final List<String> STOCK_CODES = List.of(
+            "005930", "373220", "005380", "000660", "083650");
+    public static final List<String> EXCLUDED_PATHS = List.of(
+            "/api/auth", "/api/test", "/api/flask", "/swagger-ui/", "/token", "/v3/api-docs"
+    );
 }
