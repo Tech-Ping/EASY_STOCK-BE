@@ -9,9 +9,9 @@ import com.easystock.backend.infrastructure.finance.kis.converter.KisStockConver
 import com.easystock.backend.infrastructure.finance.kis.response.*;
 import com.easystock.backend.infrastructure.finance.kis.token.KISTokenService;
 import com.easystock.backend.presentation.api.dto.converter.StockConverter;
-import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
-import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
+import com.easystock.backend.presentation.api.dto.response.*;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +48,24 @@ public class StockService {
 
     @Value("${KIS_TRADE_QUOTE_TR_ID:}")
     private String KIS_TRADE_QUOTE_TR_ID;
+
+    @Value("${KIS_TRADE_AMOUNT_URL:}")
+    private String KIS_TRADE_AMOUNT_URL;
+
+    @Value("${KIS_TRADE_AMOUNT_TR_ID:}")
+    private String KIS_TRADE_AMOUNT_TR_ID;
+
+    @Value("${KIS_STOCK_FINANCIAL_URL_1:}")
+    private String KIS_STOCK_FINANCIAL_URL_1;
+
+    @Value("${KIS_STOCK_FINANCIAL_TR_ID_1:}")
+    private String KIS_STOCK_FINANCIAL_TR_ID_1;
+
+    @Value("${KIS_STOCK_FINANCIAL_URL_2:}")
+    private String KIS_STOCK_FINANCIAL_URL_2;
+
+    @Value("${KIS_STOCK_FINANCIAL_TR_ID_2:}")
+    private String KIS_STOCK_FINANCIAL_TR_ID_2;
 
     private final KisStockConverter kisStockConverter;
     private final KISTokenService kisTokenService;
@@ -174,5 +196,126 @@ public class StockService {
                 .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
 
         return getStockQuotesFromApi(stock, type);
+    }
+
+
+    /**
+     * 특정 주식의 8일간의 투자자별 순매수 거래 대금 정보를 가져오는 메소드
+     */
+    public List<StockAmountResponse> getStockAmountFromApi(Long stockId) {
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
+        try {
+            ResponseEntity<KisStockAmountsResponse> kisResponse = kisStockConverter.exchangeRestTemplate(
+                    "Bearer " + kisTokenService.getAccessToken(),
+                    APP_KEY,
+                    APP_SECRET,
+                    stock.getCode(),
+                    KIS_TRADE_AMOUNT_URL,
+                    KIS_TRADE_AMOUNT_TR_ID,
+                    KisStockAmountsResponse.class
+            );
+
+            KisStockAmountsResponse stockApiResponse = kisResponse.getBody();
+
+            if (stockApiResponse != null) {
+                List<KisStockAmountsOutputResponse> stockOutputs = stockApiResponse.getOutput();
+                if (stockOutputs != null) {
+                    return stockOutputs.stream()
+                            .limit(8)
+                            .map(stockOutput -> StockConverter.toStockAmountReponse(stockOutput))
+                            .collect(Collectors.toList());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Collections.emptyList();
+    }
+
+    public StockInfoResponse getStockInfo(Long stockId) {
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
+
+        try {
+            ResponseEntity<KisStockPricesResponse> kisResponse = kisStockConverter.exchangeRestTemplate(
+                    "Bearer " + kisTokenService.getAccessToken(),
+                    APP_KEY,
+                    APP_SECRET,
+                    stock.getCode(),
+                    KIS_STOCK_PRICE_URL,
+                    KIS_STOCK_PRICE_TR_ID,
+                    KisStockPricesResponse.class
+            );
+
+            KisStockPricesResponse stockApiResponse = kisResponse.getBody();
+
+            if (stockApiResponse != null) {
+                KisStockPricesOutputResponse stockOutput = stockApiResponse.getOutput();
+                if (stockOutput != null) {
+                    StockInfoResponse stockInfo = StockConverter.toStockInfoResponse(stock, stockOutput);
+
+                    return stockInfo;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null; // 실패 시 null 반환
+    }
+
+
+    public List<StockFinancialResponse> getFinancials(Long stockId) {
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
+
+        try {
+            ResponseEntity<KisStockMoneysResponse> kisResponse1 = kisStockConverter.exchangeRestTemplate2(
+                    "Bearer " + kisTokenService.getAccessToken(),
+                    APP_KEY,
+                    APP_SECRET,
+                    stock.getCode(),
+                    KIS_STOCK_FINANCIAL_URL_1,
+                    KIS_STOCK_FINANCIAL_TR_ID_1,
+                    KisStockMoneysResponse.class
+            );
+
+            KisStockMoneysResponse stockApiResponse1 = kisResponse1.getBody();
+
+            ResponseEntity<KisStockFinancialsResponse> kisResponse2 = kisStockConverter.exchangeRestTemplate2(
+                    "Bearer " + kisTokenService.getAccessToken(),
+                    APP_KEY,
+                    APP_SECRET,
+                    stock.getCode(),
+                    KIS_STOCK_FINANCIAL_URL_2,
+                    KIS_STOCK_FINANCIAL_TR_ID_2,
+                    KisStockFinancialsResponse.class
+            );
+
+            KisStockFinancialsResponse stockApiResponse2 = kisResponse2.getBody();
+
+
+            if (stockApiResponse1 != null && stockApiResponse2 != null ) {
+                List<KisStockMoneysOutputReponse> stockOutputs1 = stockApiResponse1.getOutput();
+                List<KisStockFinancialsOutputResponse> stockOutputs2 = stockApiResponse2.getOutput();
+
+
+                if (stockOutputs1 != null && stockOutputs2 != null) {
+                    int limit = Math.min(3, Math.min(stockOutputs1.size(), stockOutputs2.size()));
+
+                    List<StockFinancialResponse> result = new ArrayList<>();
+                    for (int i = 0; i < limit; i++) {
+                        result.add(StockConverter.toStockFinancialResponse(stockOutputs1.get(i), stockOutputs2.get(i)));
+                    }
+                    return result;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null; // 실패 시 null 반환
     }
 }
