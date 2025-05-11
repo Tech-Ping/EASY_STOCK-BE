@@ -2,11 +2,8 @@ package com.easystock.backend.presentation.api.dto.converter;
 
 import com.easystock.backend.infrastructure.database.entity.Stock;
 import com.easystock.backend.infrastructure.database.entity.enums.TradeType;
-import com.easystock.backend.infrastructure.finance.kis.response.KisStockPricesOutputResponse;
-import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput1Response;
-import com.easystock.backend.infrastructure.finance.kis.response.KisStockQuotesOutput2Response;
-import com.easystock.backend.presentation.api.dto.response.StockPricesResponse;
-import com.easystock.backend.presentation.api.dto.response.StockQuotesResponse;
+import com.easystock.backend.infrastructure.finance.kis.response.*;
+import com.easystock.backend.presentation.api.dto.response.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,6 +22,15 @@ public class StockConverter {
                 .prdyCtrt(Double.parseDouble(stockOutput.getPrdyCtrt()))
                 .acmlTrPbmn(Long.parseLong(stockOutput.getAcmlTrPbmn()))
                 .acmlVol(Long.parseLong(stockOutput.getAcmlVol()))
+                .build();
+    }
+
+    public static StockAmountResponse toStockAmountReponse(KisStockAmountsOutputResponse stockOutput){
+        return StockAmountResponse.builder()
+                .date(stockOutput.getStck_bsop_date())
+                .foreignAmounts(stockOutput.getFrgn_ntby_tr_pbmn())
+                .personAmounts(stockOutput.getPrsn_ntby_tr_pbmn())
+                .organizationAmounts(stockOutput.getOrgn_ntby_tr_pbmn())
                 .build();
     }
 
@@ -86,5 +92,30 @@ public class StockConverter {
         }
 
         return null;
+    }
+
+    public static StockInfoResponse toStockInfoResponse(Stock stock, KisStockPricesOutputResponse stockOutput) {
+        return StockInfoResponse.builder()
+                .stockName(stock.getName())
+                .marketType(String.valueOf(stock.getType()))
+                .sectorName(stockOutput.getBstpKorIsnm())
+                .marketCap(stockOutput.getHtsAvls())
+                .listedShares(stockOutput.getLstnStcn())
+                .capital(stockOutput.getCpfn())
+                .parValue(stockOutput.getStckFcam())
+                .build();
+    }
+
+    public static StockFinancialResponse toStockFinancialResponse(KisStockMoneysOutputReponse kisStockMoneysOutputReponse, KisStockFinancialsOutputResponse kisStockFinancialsOutputResponse) {
+        return StockFinancialResponse.builder()
+                .quarter(kisStockMoneysOutputReponse.getStac_yymm())
+                .revenue(kisStockFinancialsOutputResponse.getSale_account())
+                .operatingProfit(kisStockFinancialsOutputResponse.getBsop_prti())
+                .netIncome(kisStockFinancialsOutputResponse.getThtr_ntin())
+                .totalAssets(kisStockMoneysOutputReponse.getTotal_aset())
+                .totalLiabilities(kisStockMoneysOutputReponse.getTotal_lblt())
+                .equity(kisStockMoneysOutputReponse.getTotal_cptl())
+                .capitalStock(kisStockMoneysOutputReponse.getCpfn())
+                .build();
     }
 }
