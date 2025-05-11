@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -205,6 +206,7 @@ public class StockService {
     public List<StockAmountResponse> getStockAmountFromApi(Long stockId) {
         Stock stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
+
         try {
             ResponseEntity<KisStockAmountsResponse> kisResponse = kisStockConverter.exchangeRestTemplate(
                     "Bearer " + kisTokenService.getAccessToken(),
@@ -216,25 +218,22 @@ public class StockService {
                     KisStockAmountsResponse.class
             );
 
-            KisStockAmountsResponse stockApiResponse = kisResponse.getBody();
+            List<KisStockAmountsOutputResponse> stockOutputs = Optional.ofNullable(kisResponse.getBody())
+                    .map(KisStockAmountsResponse::getOutput)
+                    .orElse(Collections.emptyList());
 
-            if (stockApiResponse != null) {
-                List<KisStockAmountsOutputResponse> stockOutputs = stockApiResponse.getOutput();
-                if (stockOutputs != null) {
-                    return stockOutputs.stream()
-                            .limit(8)
-                            .map(stockOutput -> StockConverter.toStockAmountReponse(stockOutput))
-                            .collect(Collectors.toList());
-                }
-            }
+            return stockOutputs.stream()
+                    .limit(8)
+                    .map(StockConverter::toStockAmountReponse)
+                    .collect(Collectors.toList());
+
         } catch (Exception e) {
             e.printStackTrace();
+            return Collections.emptyList();
         }
-
-        return Collections.emptyList();
     }
 
-    public StockInfoResponse getStockInfo(Long stockId) {
+    public Optional<StockInfoResponse> getStockInfo(Long stockId) {
         Stock stock = stockRepository.findById(stockId)
                 .orElseThrow(() -> new StockException(ErrorStatus.STOCK_NOT_FOUND));
 
@@ -249,23 +248,15 @@ public class StockService {
                     KisStockPricesResponse.class
             );
 
-            KisStockPricesResponse stockApiResponse = kisResponse.getBody();
+            return Optional.ofNullable(kisResponse.getBody())
+                    .map(KisStockPricesResponse::getOutput)
+                    .map(output -> StockConverter.toStockInfoResponse(stock, output));
 
-            if (stockApiResponse != null) {
-                KisStockPricesOutputResponse stockOutput = stockApiResponse.getOutput();
-                if (stockOutput != null) {
-                    StockInfoResponse stockInfo = StockConverter.toStockInfoResponse(stock, stockOutput);
-
-                    return stockInfo;
-                }
-            }
         } catch (Exception e) {
             e.printStackTrace();
+            return Optional.empty();
         }
-
-        return null; // 실패 시 null 반환
     }
-
 
     public List<StockFinancialResponse> getFinancials(Long stockId) {
         Stock stock = stockRepository.findById(stockId)

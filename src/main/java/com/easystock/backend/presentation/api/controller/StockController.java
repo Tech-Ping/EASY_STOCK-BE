@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -78,7 +79,7 @@ public class StockController {
             summary = "주식별 기업 정보 조회 API - 특정 주식의 기업 정보를 반환합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
-    public ApiResponse<StockInfoResponse> getStockInfos(
+    public ApiResponse<Optional<StockInfoResponse>> getStockInfos(
             @Parameter(description = "주식 ID", required = true)
             @PathVariable Long stockId
     ) {
