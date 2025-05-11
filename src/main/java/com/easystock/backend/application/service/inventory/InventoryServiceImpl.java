@@ -33,7 +33,7 @@ public class InventoryServiceImpl implements InventoryService {
                         memberId,
                         inventory.getStock(),
                         inventory.getQuantity(),
-                        inventory.getTotalPrice() / inventory.getQuantity() // 매입가 계산 (총 가격 / 수량)
+                        inventory.getQuantity() == 0 ? 0 : inventory.getTotalPrice() / inventory.getQuantity() // 매입가 계산 (총 가격 / 수량)
                 ))
                 .collect(Collectors.toList());
     }
