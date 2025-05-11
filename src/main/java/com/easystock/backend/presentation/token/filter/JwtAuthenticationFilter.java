@@ -10,7 +10,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,18 +17,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
-import static com.easystock.backend.presentation.token.UserAuthentication.createUserAuthentication;
+import static com.easystock.backend.util.Constants.EXCLUDED_PATHS;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtGenerator jwtGenerator;
     private final JwtProvider jwtProvider;
-
-    private static final List<String> EXCLUDED_PATHS = List.of(
-            "/api/auth", "/api/test", "/swagger-ui/", "/token", "/v3/api-docs"
-    );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

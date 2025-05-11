@@ -29,6 +29,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'io.github.cdimascio:dotenv-java:2.2.4'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.google.guava:guava:32.1.2-jre' //guava library
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'

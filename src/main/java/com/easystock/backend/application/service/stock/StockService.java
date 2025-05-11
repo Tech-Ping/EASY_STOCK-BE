@@ -12,6 +12,7 @@ import com.easystock.backend.presentation.api.dto.converter.StockConverter;
 import com.easystock.backend.presentation.api.dto.response.*;
 import com.easystock.backend.presentation.api.payload.code.status.ErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.util.concurrent.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -78,24 +83,36 @@ public class StockService {
      *
      * @return 저장된 주식들의 종목코드, 종목이름, 현재가, 전일 대비, 전일 대비율
      */
+
     @Transactional
     public List<StockPricesResponse> getStockPrices() {
         List<Stock> stocks = stockRepository.findAll();
 
-        return stocks.stream()
-                .map(stock -> {
+        RateLimiter rateLimiter = RateLimiter.create(10.0);
+
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+
+        List<CompletableFuture<StockPricesResponse>> futures = stocks.stream()
+                .map(stock -> CompletableFuture.supplyAsync(() -> {
+                    rateLimiter.acquire();
                     try {
                         return getStockPriceFromApi(stock);
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;
-                    } finally {
-                        waitNextKsiApi();
                     }
-                })
-                .filter(stockPricesResponse -> stockPricesResponse != null) // null 필터링
+                }, executor))
                 .collect(Collectors.toList());
+
+        List<StockPricesResponse> result = futures.stream()
+                .map(CompletableFuture::join)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        executor.shutdown();
+        return result;
     }
+
 
     /**
      * 특정 주식의 실시간 시세를 가져오는 메소드
