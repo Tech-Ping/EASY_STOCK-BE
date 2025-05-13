@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 @RequiredArgsConstructor
@@ -33,9 +35,15 @@ public class StockInfoInitializeService {
         boolean success = true;
 
         for (String code : stockCodes) {
-            for (int i = 1; i <= 10; i++) {
-                try {
+            try {
+                Map<LocalDate, Integer> datePriceMap = new TreeMap<>();
+                LocalDate lastValidDate = null;
+                int lastValidPrice = 0;
+
+                // step 1) 개장일인 경우 바로 Map에 저장
+                for (int i = 1; i <= 10; i++) {
                     String url = NAVER_FINANCE_URL + code + "&page=" + i;
+
                     Document doc = Jsoup.connect(url)
                             .userAgent("Mozilla/5.0")
                             .get();
@@ -49,31 +57,39 @@ public class StockInfoInitializeService {
                             String dateStr = tds.get(0).text().trim();
                             String priceStr = tds.get(1).text().replace(",", "").trim();
 
-                            if (!dateStr.isEmpty() && !priceStr.isEmpty()) {
+                            if (!dateStr.isEmpty() && !priceStr.isEmpty() && !priceStr.equals("-")) {
                                 LocalDate rowDate = LocalDate.parse(dateStr, FORMATTER);
-
-                                if (!rowDate.isBefore(twoMonthAgo) && !rowDate.isAfter(today)) {
-                                    int closePrice = Integer.parseInt(priceStr);
-
-                                    boolean exists = stockRecordRepository.existsByStockCodeAndDate(code, rowDate);
-                                    if (!exists) {
-                                        stockRecordRepository.save(
-                                                StockRecordConverter.toRecord(code, rowDate, closePrice)
-                                        );
-                                        log.info("초기화 저장: {} / {} - {}원", code, rowDate, closePrice);
-                                    }
-                                }
+                                int closePrice = Integer.parseInt(priceStr);
+                                datePriceMap.put(rowDate, closePrice);
                             }
                         }
                     }
-                } catch (Exception e) {
-                    log.error("초기화 실패: {}, {}", code, e.getMessage());
-                    success = false;
                 }
+
+                // step 2) 휴장일인 경우 유효한 날짜
+                for (LocalDate date = twoMonthAgo; !date.isAfter(today); date = date.plusDays(1)) {
+                    if (datePriceMap.containsKey(date)) {
+                        lastValidPrice = datePriceMap.get(date);
+                        lastValidDate = date;
+                    }
+
+                    if (lastValidDate == null) continue;
+
+                    boolean exists = stockRecordRepository.existsByStockCodeAndDate(code, date);
+                    if (!exists) {
+                        stockRecordRepository.save(
+                                StockRecordConverter.toRecord(code, date, lastValidPrice)
+                        );
+                        log.info("보간 저장: {} / {} - {}원", code, date, lastValidPrice);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("초기화 실패: {} - {}", code, e.getMessage(), e);
+                success = false;
             }
         }
-
         return success;
     }
+
 
 }
