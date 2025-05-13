@@ -15,6 +15,7 @@ public class DailyProfit {
     private int totalTradeAmount;
     private int realProfit;
     private String realProfitRate;
+    private Double realProfitRateValue;
 
     public static DailyProfit from(LocalDate date, int totalInvestment, int realProfit, int totalEvaluated, int totalInvested) {
         return DailyProfit.builder()
@@ -25,6 +26,7 @@ public class DailyProfit {
                         totalInvested == 0 ? "0.0%" :
                                 FormatUtils.formatRatePercentage(FormatUtils.calculateChangeRate(totalEvaluated, totalInvested))
                 )
+                .realProfitRateValue(FormatUtils.calculateChangeRate(totalEvaluated, totalInvested))
                 .build();
     }
 

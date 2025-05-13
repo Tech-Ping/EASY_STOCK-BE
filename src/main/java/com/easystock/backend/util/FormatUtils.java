@@ -29,7 +29,7 @@ public class FormatUtils {
      * 변화율을 계산합니다.
      */
     public static Double calculateChangeRate(int currentPrice, int lastPrice) {
-        if (lastPrice == 0) return null;
+        if (lastPrice == 0) return 0.0;
 
         double rawRate = (currentPrice - lastPrice) * 100.0 / lastPrice;
         return Math.round(rawRate * 100) / 100.0;
