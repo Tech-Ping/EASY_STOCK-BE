@@ -37,9 +37,8 @@ git clone https://github.com/Tech-Ping/EASY_STOCK-BE.git
 ```
 
 2. Setting up environment variables <br>
-`.env` 파일을 디렉토리 최상위에 위치한 후 환경 변수 주입
-<br>
-- `src/main/resources/application.yml`
+`.env` 파일을 디렉토리 최상위에 위치한 후 환경 변수 주입 <br>
+- `src/main/resources/application.yml` <br>
 ```yaml
 # application.yml
 spring:
