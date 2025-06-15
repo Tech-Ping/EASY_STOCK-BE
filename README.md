@@ -5,6 +5,7 @@
 
 > 주식 투자에 입문하고 싶은 2030 세대를 위한 AI 챗봇 기반의 초보자용 모의 투자 서비스
 
+* Deployed Server Info : https://easystogy.store/swagger-ui/index.html#/
 
 ---
 
@@ -30,13 +31,15 @@
 
 ## How to Run
 
-1. 프로젝트 클론
+1. Clone Project
 ```bash
 git clone https://github.com/Tech-Ping/EASY_STOCK-BE.git
 ```
 
-2. 환경 변수 설정 - `main/resources/application.yml`
-
+2. Setting up environment variables <br>
+`.env` 파일을 디렉토리 최상위에 위치한 후 환경 변수 주입
+<br>
+- `src/main/resources/application.yml`
 ```yaml
 # application.yml
 spring:
@@ -56,13 +59,20 @@ connection-timeout: 60000
 ... (후략)
 ```
 
-3. 실행  
-   IDE에서 `EasyStockApplication.java` 실행 또는
+3. Implementation  
+   IDE에서 `EasyStockApplication.java` 실행 혹은 터미널 명령어로 실행
 
 ```bash
 ./gradlew bootRun
 ```
 
+
+### What we made
+
+  - 실시간 주가 조회
+  - 찬반 질문 응답
+  - 튜토리얼 & 퀴즈 학습 API
+  - 유저 투자 이력 저장/조회
 ---
 
 
@@ -70,11 +80,6 @@ connection-timeout: 60000
 
 - [NOTION API 명세서](https://polyester-mollusk-e44.notion.site/API-17384444491a80e5901ecb66c4a2b79d?pvs=74)
 - Swagger 문서 version: 실행 후 `http://localhost:8080/swagger-ui/index.html` 로 접속 후 확인 가능
-- 주요 기능:
-    - 실시간 주가 조회
-    - 찬반 질문 응답
-    - 튜토리얼 & 퀴즈 학습 API
-    - 유저 투자 이력 저장/조회
 
 ---
 
@@ -88,7 +93,7 @@ connection-timeout: 60000
 ---
 
 
-## 👩🏻‍💻 Contributors
+## 👩🏻‍💻 BE Contributors
 <div>
 
 |                  [@chock-cho](https://github.com/chock-cho)                  |                     [@nzeong](https://github.com/nzeong)                      |
