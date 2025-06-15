@@ -31,34 +31,34 @@
 
 ## How to Run
 
-1. Clone Project
+1. **Clone Project**
 ```bash
 git clone https://github.com/Tech-Ping/EASY_STOCK-BE.git
 ```
 
-2. Setting up environment variables <br>
-`.env` 파일을 디렉토리 최상위에 위치한 후 환경 변수 주입 <br>
-- `src/main/resources/application.yml` <br>
+2. **Setting up environment variables**
+
+`.env` 파일을 프로젝트 최상위 디렉토리에 위치시킨 후, 아래와 같이 `application.yml`에 환경 변수를 주입합니다.
+
+`src/main/resources/application.yml`
 ```yaml
-# application.yml
 spring:
-application:
-name: easystock-backend
-datasource:
-driver-class-name: com.mysql.cj.jdbc.Driver
-url: ${MYSQL_URL}
-username: ${MYSQL_USERNAME}
-password: ${MYSQL_PASSWORD}
-hikari:
-auto-commit: false
-pool-name: easystock-db-pool
-minimum-idle: 10
-maximum-pool-size: 30
-connection-timeout: 60000
-... (후략)
+  application:
+    name: easystock-backend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    hikari:
+      auto-commit: false
+      pool-name: easystock-db-pool
+      minimum-idle: 10
+      maximum-pool-size: 30
+      connection-timeout: 60000
 ```
 
-3. Implementation  
+3. **Implementation**  
    IDE에서 `EasyStockApplication.java` 실행 혹은 터미널 명령어로 실행
 
 ```bash
